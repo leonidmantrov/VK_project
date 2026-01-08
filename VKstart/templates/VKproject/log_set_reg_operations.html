@@ -1,0 +1,114 @@
+{% extends "VKproject/base.html" %}
+{% load static %}
+
+{% block header__input__search %}{% endblock header__input__search %}
+{% block button__ASK %}{% endblock button__ASK %}
+
+
+{% block section %}
+    <form method="post" enctype="multipart/form-data" class="mt-4">
+        {% csrf_token %}
+
+        <!-- Поле Логина -->
+        {% block Login %}
+        <div class="row mb-3">
+            <label for="inputLogin" class="col-sm-2 col-form-label">Login</label>
+            <div class="col-sm-10">
+                <input type="text" name="login" class="form-control {% if login_error %}is-invalid{% endif %}"
+                       id="inputLogin" value="{{ user_login }}" placeholder="dr_pepper" maxlength="30" required>
+                {% if login_error %}
+                    <div class="invalid-feedback">{{ login_error }}</div>
+                {% endif %}
+                <div class="form-text">Максимум 30 символов.</div>
+            </div>
+        </div>
+        {% endblock Login %}
+
+        <!-- Поле Почты -->
+        {% block Email %}
+        <div class="row mb-3">
+            <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+                <input type="email" class="form-control" id="inputEmail" value="{{ user_email }}" placeholder="dr.pepper@example.com">
+            </div>
+        </div>
+        {% endblock Email %}
+
+        <!-- Поле имени -->
+        {% block NickName %}
+        <div class="row mb-3">
+            <label for="inputNickName" class="col-sm-2 col-form-label">NickName</label>
+            <div class="col-sm-10">
+                <input type="text" name="nickname" class="form-control {% if NickName_error %}is-invalid{% endif %}"
+                       id="inputNickName" value="{{ user_nickname }}" placeholder="Dr. Pepper" maxlength="30" required>
+                {% if NickName_error %}
+                    <div class="invalid-feedback">{{ NickName_error }}</div>
+                {% endif %}
+                <div class="form-text">Максимум 30 символов.</div>
+            </div>
+        </div>
+        {% endblock NickName %}
+
+        <!-- Поле пароля -->
+        {% block Password %}
+        <div class="row mb-3">
+            <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+            <div class="col-sm-10">
+                <input type="password" name="password" class="form-control {% if password_error %}is-invalid{% endif %}"
+                       id="inputPassword" value="{{ user_password }}" placeholder="Введите пароль" minlength="8" required>
+                {% if password_error %}
+                    <div class="invalid-feedback">{{ password_error }}</div>
+                {% endif %}
+                <div class="form-text">Минимум 8 символов.</div>
+            </div>
+        </div>
+        {% endblock Password %}
+
+        <!-- Поле подтверждения пароля -->
+        {% block RepeatPassword %}
+        <div class="row mb-3">
+            <label for="inputPasswordConfirm" class="col-sm-2 col-form-label">Repeat password</label>
+            <div class="col-sm-10">
+                <input type="password" name="password_repeat" class="form-control {% if password_error %}is-invalid{% endif %}" id="inputPasswordConfirm" placeholder="Повторите пароль" required>
+                {% if password_error %}
+                    <div class="invalid-feedback">
+                        {{ password_error }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endblock RepeatPassword %}
+
+        <!-- Поле выбора Аватара -->
+        {% block Image %}
+        <div class="row mb-4">
+            <label class="col-sm-2 col-form-label">Avatar</label>
+            <div class="col-sm-10">
+                <div class="mb-3 d-flex align-items-center gap-3">
+                    <img src="{% static 'VKproject/img/profile.png' %}"
+                         id="avatarPreview"
+                         alt="Current Avatar"
+                         class="rounded-circle border"
+                         style="width: 80px; height: 80px; object-fit: cover;">
+                    <div class="form-text">Текущее изображение</div>
+                </div>
+
+                <div class="input-group">
+                    <input type="file" name="avatar" class="form-control" id="avatarUpload" accept="image/*">
+                </div>
+            </div>
+        </div>
+        {% endblock Image %}
+
+        <!-- Одна общая кнопка для сохранения всего -->
+        {% block MagicButton %}
+        <div class="row">
+            <div class="col-sm-10 offset-sm-2">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+        {% endblock MagicButton %}
+    </form>
+{% endblock section %}
+
+{% block aside %}{% endblock aside %}
