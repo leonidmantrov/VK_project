@@ -1,0 +1,32 @@
+{% extends "so_project/new_or_tag_Questions.html" %}
+{% load static %}
+
+{% block question__styles %}
+    <link rel="stylesheet" href="{% static 'so_project/css/add_question.css' %}">
+{% endblock question__styles %}
+
+{% block header__register %}{% endblock header__register %}
+
+{% block section__title %}
+    <h2>New Question</h2>
+{% endblock section__title %}
+
+{% block section %}
+    <div class="section__new__question">
+        <div class="question__field__name">
+            <p class="field__name">Title</p>
+            <textarea class="question__name" placeholder="Введите название вопроса" required></textarea>
+        </div>
+        <div class="question__field__text">
+            <p class="fiels__text">Text</p>
+            <textarea class="question__text" placeholder="Введите сам вопрос" required></textarea>
+        </div>
+        <div class="question__field__tags">
+            <p class="field__tags">Tags</p>
+            <textarea class="question__tags" placeholder="Введите слова-триггеры, по которым другие пользователи смогут найти ваш вопрос" required></textarea>
+        </div>
+    </div>
+    <div class="button__ASK__new__question">
+        <button class="GO__new__question">ASK!</button>
+    </div>
+{% endblock section %}

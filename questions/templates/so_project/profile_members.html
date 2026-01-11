@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BrandName</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}?v=1.1">
+    <link rel="stylesheet" href="{% static 'so_project/css/profile_members.css' %}">
+</head>
+<body class="root">
+	    <header class="header">
+        <div class="header__wrapper">
+            <div class="cap">
+                <span class="header__logo"><a href="{% url 'questions_page' %}" style="color: black">BrandName</a></span>
+            </div>
+            <div class="header__search">
+                <form action="{% url 'questions_by_tag' %}" method="get" class="d-flex gap-2">
+                    <input type="text" name="tag_name" class="header__search" placeholder="Search..." title="Для поиска по тегу оберните слово в квадратных скобках: [тег]" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                    <button type="submit" class="header__ASK">ASK!</button>
+                </form>
+            </div>
+            <div class="header__profile">
+                <img src="{% static 'so_project/img/profile.png' %}" alt="profile" class="header__profile__image">
+                <div class="header__profile__user">
+                    <span class="user__profile"><a href="{% url 'profile_member' id=1%}" style="color: black">Dr. Pepper</a></span>
+                    <div class="header__profile__action">
+                        <a class="text-secondary" href="{% url 'settings_page' %}">settings</a>
+                        <a class="text-secondary" href="#">logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="main container mt-4">
+        <div class="profile__member">
+            <img src="{% static info_profile.avatar %}" alt="profile" class="member__profile__image">
+            <div class="info__activity">
+                <p class="total__questions">Total questions: {{ info_profile.Questions|length }}</p>
+                <p class="total__answers">Total answers: {{ info_profile.Answers|length }}</p>
+            </div>
+        </div>
+        <div class="activity__member">
+            <div class="questions__member">
+                <h3>Questions</h3>
+                <div class="list-group" id="questionsList">
+                    {% for q in info_profile.Questions|slice:":5" %}
+                        <div class="list-group-item card__activity">
+                            <span class="badge bg-secondary">500</span>
+                            <a href="#" class="ms-3">{{ q|truncatewords:10 }}</a>
+                        </div>
+                    {% endfor %}
+
+                    {% if info_profile.Questions|length > 5 %}
+                        <div id="moreQuestions" style="display: none;">
+                            {% for q in info_profile.Questions|slice:"5:" %}
+                                <div class="list-group-item card__activity">
+                                    <span class="badge bg-secondary">500</span>
+                                    <a href="#" class="ms-3">{{ q|truncatewords:10 }}</a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button class="btn btn-link mt-2" id="showAllBtnQ" onclick="showAllQuestions()">Показать все</button>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="answers__member">
+                <h3>Answers</h3>
+                <div class="list-group" id="answersList">
+                    {% for an in info_profile.Answers|slice:":5" %}
+                        <div class="list-group-item card__activity">
+                            <span class="badge bg-secondary">500</span>
+                            <a href="#" class="ms-3">{{ an|truncatewords:10 }}</a>
+                        </div>
+                    {% endfor %}
+
+                    {% if info_profile.Answers|length > 5 %}
+                        <div id="moreAnswers" style="display: none;">
+                            {% for an in info_profile.Answers|slice:"5:" %}
+                                <div class="list-group-item card__activity">
+                                    <span class="badge bg-secondary">500</span>
+                                    <a href="#" class="ms-3">{{ an|truncatewords:10 }}</a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button class="btn btn-link mt-2" id="showAllBtnAN" onclick="showAllAnswers()">Показать все</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">2026 BrandName. Все права защищены.</p>
+            <div class="mt-2">
+                <a href="#" class="text-secondary me-3">Политика конфиденциальности</a>
+                <a href="#" class="text-secondary">Контакты</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        function showAllQuestions() {
+            const moreContent = document.getElementById('moreQuestions');
+            moreContent.style.display = 'block';
+
+            const btn = document.getElementById('showAllBtnQ');
+            btn.style.display = 'none';
+        }
+
+        function showAllAnswers() {
+            const moreContent = document.getElementById('moreAnswers');
+            moreContent.style.display = 'block';
+
+            const btn = document.getElementById('showAllBtnAN');
+            btn.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

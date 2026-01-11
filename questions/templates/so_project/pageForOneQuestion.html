@@ -1,0 +1,67 @@
+{% extends "so_project/new_or_tag_Questions.html" %}
+{% load static %}
+
+{% block question__styles %}
+    <link rel="stylesheet" href="{% static 'so_project/css/pageForOneQuestion.css' %}">
+{% endblock question__styles %}
+
+{% block header__register %}{% endblock header__register %}
+
+{% block sec__tit %}{% endblock sec__tit %}
+
+{% block section %}
+    <div class="questions__content ">
+        <div class="card__question">
+            <div class="question__aside">
+                <img src="{% static question.avatar %}" alt="avatarka" class="questions__image">
+                <input id="1" type="number" value="{{question.answer_count}}">
+            </div>
+
+            <div class="question__content">
+                <h3 class="question__header">{{ question.question }}</h3>
+                <p class="question__description">
+                    {{ question.description_question }}
+                </p>
+                <div class="question__footer">
+                    <div class="question__tags">
+                        <span class="question__tags__title"><strong>Tags:</strong></span>
+                        <div class="question__tags__list">
+                            {% for t in question.tags %}
+                                <a href="{% url 'questions_by_tag' %}?tag_name=[{{ t }}]">{{ t }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="answers__content">
+        {% for an in answers %}
+            <div class="card__answers">
+                <div class="question__aside">
+                    <img src="{% static an.avatar %}" alt="avatarka" class="questions__image">
+                </div>
+                <div class="question__content">
+                    <p class="question__description">
+                        {{ an.description_answer }}
+                    </p>
+                    <div class="question__footer">
+                        <!-- Checkbox позволяет выбирать много вариантов одновременно -->
+                        <!-- name с скобками [] важен для получения списка на бэкенде -->
+                        <input type="checkbox" class="btn-check" name="correct_answers[]" id="correct_{{ forloop.counter }}" autocomplete="off">
+                        <label class="btn btn-outline-success d-flex align-items-center gap-2" for="correct_{{ forloop.counter }}" style="width: fit-content;">
+                            <span>✔</span> Correct!
+                        </label>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="section__my__answer">
+        <textarea class="answer__text" placeholder="Введите свой ответ" required></textarea>
+    </div>
+    <div class="button__my__answer">
+        <button class="button__answer">Answer!</button>
+    </div>
+{% endblock section %}
