@@ -10,13 +10,10 @@
 </head>
 <body class="root">
     {% block header %}
-    <header class="header">
+	    <header class="header">
         <div class="header__wrapper">
             <div class="cap">
-                <span class="header__logo">BrandName</span>
-                <a href="{% url 'questions_page' %}" class="btn" style="background-color: black; color: white">
-                    <i class="bi bi-house-door-fill"></i> Home
-                </a>
+                <span class="header__logo"><a href="{% url 'questions_page' %}" style="color: black">BrandName</a></span>
             </div>
             <div class="header__search">
                 <form action="{% url 'questions_by_tag' %}" method="get" class="d-flex gap-2">
@@ -32,10 +29,10 @@
             <div class="header__profile">
                 <img src="{% static 'VKproject/img/profile.png' %}" alt="profile" class="header__profile__image">
                 <div class="header__profile__user">
-                    <span>Dr. Pepper</span>
+                    <span class="user__profile"><a href="{% url 'profile_member' id=1%}" style="color: black">Dr. Pepper</a></span>
                     <div class="header__profile__action">
-                        <a href="{% url 'settings_page' %}">settings</a>
-                        <a href="#">logout</a>
+                        <a class="text-secondary" href="{% url 'settings_page' %}">settings</a>
+                        <a class="text-secondary" href="#">logout</a>
                     </div>
                 </div>
             </div>
@@ -50,45 +47,57 @@
         </div>
     </header>
     {% endblock header %}
-    <main class="main">
-        <section class="section">
-            {% block sec__tit %}
-            <div class="section__title">
-                {% block section__title %}{% endblock section__title %}
-            </div>
-            {% endblock sec__tit %}
-            {% block section %}{% endblock section %}
-        </section>
+    <main class="main container mt-4">
+        <div class="row g-4">
+            <section class="section col-12 col-md-8 col-lg-9 order-last order-md-first">
+                {% block sec__tit %}
+                <div class="section__title">
+                    {% block section__title %}{% endblock section__title %}
+                </div>
+                {% endblock sec__tit %}
+                {% block section %}{% endblock section %}
+            </section>
 
-        {% block aside %}
-        <aside class="aside">
-            <div class="aside__tags">
-                <span class="aside__title">Popular Tags</span>
-                <div class="aside__tags__list">
-                    <a href="{% url 'questions_by_tag' %}?tag_name=[perl]">perl</a>
-                    <a href="{% url 'questions_by_tag' %}?tag_name=[python]">python</a>
-                    <a href="{% url 'questions_by_tag' %}?tag_name=[macos]">macos</a>
-                    <a href="{% url 'questions_by_tag' %}?tag_name=[tkinter]">tkinter</a>
-                    <a href="{% url 'questions_by_tag' %}?tag_name=[angular]">angular</a>
-                    <a href="{% url 'questions_by_tag' %}?tag_name=[gcc]">gcc</a>
-                    <a href="{% url 'questions_by_tag' %}?tag_name=[snowflake-schema]">snowflake-schema</a>
-                    <a href="{% url 'questions_by_tag' %}?tag_name=[swift]">swift</a>
-                    <a href="{% url 'questions_by_tag' %}?tag_name=[swiftdata]">swiftdata</a>
-                    <a href="{% url 'questions_by_tag' %}?tag_name=[compiler-bug]">compiler-bug</a>
+            {% block aside %}
+            <aside class="aside col-12 col-md-4 col-lg-3 order-first order-md-last">
+                <div class="aside__tags">
+                    <span class="aside__title">Popular Tags</span>
+                    <div class="aside__tags__list">
+                        <a href="{% url 'questions_by_tag' %}?tag_name=[perl]">perl</a>
+                        <a href="{% url 'questions_by_tag' %}?tag_name=[python]">python</a>
+                        <a href="{% url 'questions_by_tag' %}?tag_name=[macos]">macos</a>
+                        <a href="{% url 'questions_by_tag' %}?tag_name=[tkinter]">tkinter</a>
+                        <a href="{% url 'questions_by_tag' %}?tag_name=[angular]">angular</a>
+                        <a href="{% url 'questions_by_tag' %}?tag_name=[gcc]">gcc</a>
+                        <a href="{% url 'questions_by_tag' %}?tag_name=[snowflake-schema]">snowflake-schema</a>
+                        <a href="{% url 'questions_by_tag' %}?tag_name=[swift]">swift</a>
+                        <a href="{% url 'questions_by_tag' %}?tag_name=[swiftdata]">swiftdata</a>
+                        <a href="{% url 'questions_by_tag' %}?tag_name=[compiler-bug]">compiler-bug</a>
+                    </div>
                 </div>
-            </div>
-            <div class="aside_members">
-                <span class="aside__title">Best Members</span>
-                <div class="aside__members__list">
-                    <a href="#">Mr. Freeman</a>
-                    <a href="#">Dr. House</a>
-                    <a href="#">Bender</a>
-                    <a href="#">Queen Victoria</a>
-                    <a href="#">V. Pupkin</a>
+                <div class="aside_members">
+                    <span class="aside__title">Best Members</span>
+                    <div class="aside__members__list">
+                        <a href="{% url 'profile_member' id=1%}">Mr. Freeman</a>
+                        <a href="{% url 'profile_member' id=2%}">Dr. House</a>
+                        <a href="{% url 'profile_member' id=3%}">Bender</a>
+                        <a href="{% url 'profile_member' id=4%}">Queen Victoria</a>
+                        <a href="{% url 'profile_member' id=5%}">V. Pupkin</a>
+                    </div>
                 </div>
-            </div>
-        </aside>
-        {% endblock aside %}
+            </aside>
+            {% endblock aside %}
+        </div>
     </main>
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">2026 BrandName. Все права защищены.</p>
+            <div class="mt-2">
+                <a href="#" class="text-secondary me-3">Политика конфиденциальности</a>
+                <a href="#" class="text-secondary">Контакты</a>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>

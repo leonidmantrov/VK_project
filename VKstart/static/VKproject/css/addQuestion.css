@@ -48,7 +48,7 @@
 }
 
 .GO__new__question:hover {
-    background-color: lightgreen !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+    background-color: lightgreen;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: scale(1.04) !important; /* Кнопка чуть-чуть приподнимается */
 }

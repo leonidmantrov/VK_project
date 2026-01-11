@@ -5,8 +5,14 @@
 {% block header__profile %}{% endblock header__profile %}
 
 {% block section__title %}
-    <h2>New Questions</h2>
-    <a href="{% url 'questions_page' %}">Hot Questions</a>
+    <div class="info">
+        <h2>New Questions</h2>
+        <a href="{% url 'questions_page' %}">Hot Questions</a>
+    </div>
+    <div class="ask">
+        <a href="{% url 'addQuestion' %}" class="btn btn-primary" >Ask Question</a>
+    </div>
+
 {% endblock section__title %}
 
 
