@@ -1,8 +1,36 @@
-{% extends "VKproject/log_set_reg_operations.html" %}
+{% extends "VKproject/base.html" %}
 {% load static %}
 
+{% block header__input__search %}{% endblock header__input__search %}
+{% block button__ASK %}{% endblock button__ASK %}
 {% block header__register %}{% endblock header__register %}
 
 {% block section__title %}
     <h2>Settings</h2>
 {% endblock section__title %}
+
+{% block section %}
+    <form method="post" enctype="multipart/form-data" class="mt-4">
+        {% csrf_token %}
+        <!-- Поле Логина -->
+        {% include "VKproject/log_reg_set_blocks/Login_block.html" %}
+        <!-- Поле Почты -->
+        {% include "VKproject/log_reg_set_blocks/Email_block.html" %}
+        <!-- Поле имени -->
+        {% include "VKproject/log_reg_set_blocks/NickName_block.html" %}
+        <!-- Поле пароля -->
+        {% include "VKproject/log_reg_set_blocks/Password_block.html" %}
+        <!-- Поле подтверждения пароля -->
+        {% include "VKproject/log_reg_set_blocks/RepeatPassword_block.html" %}
+        <!-- Поле выбора Аватара -->
+        {% include "VKproject/log_reg_set_blocks/Image_block.html" %}
+
+        <div class="row">
+            <div class="col-sm-10 offset-sm-2">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </form>
+{% endblock section %}
+
+{% block aside %}{% endblock aside %}

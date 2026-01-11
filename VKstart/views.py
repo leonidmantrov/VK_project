@@ -91,6 +91,191 @@ ANSWERS = [
     },
 ]
 
+PROFILE_MEMBERS = [
+    {
+        "id": 1,
+        "avatar": 'VKproject/img/VKavatarka.png',
+        "Questions": [
+            """I  have the following problem. I created a desktop application to generate invoices for my dad's company.
+                The machine I wrote this application for is an iMac from 2011 running macOS High Sierra (10.13.6).
+                Because I have no Mac to test on and the age of the target system, I choose tkinter to implement the GUI
+                mainly for its cross-platform compatibility (and because i taught that tkinter is kind of old so it has good
+                chances to run on an old osx).""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+            """I  have the following problem. I created a desktop application to generate invoices for my dad's company.
+                The machine I wrote this application for is an iMac from 2011 running macOS High Sierra (10.13.6).
+                Because I have no Mac to test on and the age of the target system, I choose tkinter to implement the GUI
+                mainly for its cross-platform compatibility (and because i taught that tkinter is kind of old so it has good
+                chances to run on an old osx).""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+            """I  have the following problem. I created a desktop application to generate invoices for my dad's company.
+                The machine I wrote this application for is an iMac from 2011 running macOS High Sierra (10.13.6).
+                Because I have no Mac to test on and the age of the target system, I choose tkinter to implement the GUI
+                mainly for its cross-platform compatibility (and because i taught that tkinter is kind of old so it has good
+                chances to run on an old osx).""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+            """I  have the following problem. I created a desktop application to generate invoices for my dad's company.
+                The machine I wrote this application for is an iMac from 2011 running macOS High Sierra (10.13.6).
+                Because I have no Mac to test on and the age of the target system, I choose tkinter to implement the GUI
+                mainly for its cross-platform compatibility (and because i taught that tkinter is kind of old so it has good
+                chances to run on an old osx).""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+            """I  have the following problem. I created a desktop application to generate invoices for my dad's company.
+                The machine I wrote this application for is an iMac from 2011 running macOS High Sierra (10.13.6).
+                Because I have no Mac to test on and the age of the target system, I choose tkinter to implement the GUI
+                mainly for its cross-platform compatibility (and because i taught that tkinter is kind of old so it has good
+                chances to run on an old osx).""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+            """I  have the following problem. I created a desktop application to generate invoices for my dad's company.
+                The machine I wrote this application for is an iMac from 2011 running macOS High Sierra (10.13.6).
+                Because I have no Mac to test on and the age of the target system, I choose tkinter to implement the GUI
+                mainly for its cross-platform compatibility (and because i taught that tkinter is kind of old so it has good
+                chances to run on an old osx).""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+        ],
+        "Answers": [
+            """Why it happens --Zebra_DatePicker calculates the popup’s position once when it opens,
+               using the input’s offset() relative to <body> --When the input is inside a position:
+               sticky container, the input’s visual position changes during scroll, but its offset
+               relative to <body> does not change. --Because Zebra_DatePicker doesn’t listen to scroll
+               events of sticky parents, the popup stays stuck at the original coordinates. We can fix
+               this by forcing the datepicker to reposition itself whenever its container scrolls.""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+            """Why it happens --Zebra_DatePicker calculates the popup’s position once when it opens,
+               using the input’s offset() relative to <body> --When the input is inside a position:
+               sticky container, the input’s visual position changes during scroll, but its offset
+               relative to <body> does not change. --Because Zebra_DatePicker doesn’t listen to scroll
+               events of sticky parents, the popup stays stuck at the original coordinates. We can fix
+               this by forcing the datepicker to reposition itself whenever its container scrolls.""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+            """Why it happens --Zebra_DatePicker calculates the popup’s position once when it opens,
+               using the input’s offset() relative to <body> --When the input is inside a position:
+               sticky container, the input’s visual position changes during scroll, but its offset
+               relative to <body> does not change. --Because Zebra_DatePicker doesn’t listen to scroll
+               events of sticky parents, the popup stays stuck at the original coordinates. We can fix
+               this by forcing the datepicker to reposition itself whenever its container scrolls.""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+            """Why it happens --Zebra_DatePicker calculates the popup’s position once when it opens,
+               using the input’s offset() relative to <body> --When the input is inside a position:
+               sticky container, the input’s visual position changes during scroll, but its offset
+               relative to <body> does not change. --Because Zebra_DatePicker doesn’t listen to scroll
+               events of sticky parents, the popup stays stuck at the original coordinates. We can fix
+               this by forcing the datepicker to reposition itself whenever its container scrolls.""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+            """Why it happens --Zebra_DatePicker calculates the popup’s position once when it opens,
+               using the input’s offset() relative to <body> --When the input is inside a position:
+               sticky container, the input’s visual position changes during scroll, but its offset
+               relative to <body> does not change. --Because Zebra_DatePicker doesn’t listen to scroll
+               events of sticky parents, the popup stays stuck at the original coordinates. We can fix
+               this by forcing the datepicker to reposition itself whenever its container scrolls.""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+        ],
+    },
+    {
+        "id": 2,
+        "avatar": 'VKproject/img/VKavatarka.png',
+        "Questions": [
+            """You  have the following problem. I created a desktop application to generate invoices for my dad's company.
+                The machine I wrote this application for is an iMac from 2011 running macOS High Sierra (10.13.6).
+                Because I have no Mac to test on and the age of the target system, I choose tkinter to implement the GUI
+                mainly for its cross-platform compatibility (and because i taught that tkinter is kind of old so it has good
+                chances to run on an old osx).""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+        ],
+        "Answers": [
+            """Why it happens --Zebra_DatePicker calculates the popup’s position once when it opens,
+               using the input’s offset() relative to <body> --When the input is inside a position:
+               sticky container, the input’s visual position changes during scroll, but its offset
+               relative to <body> does not change. --Because Zebra_DatePicker doesn’t listen to scroll
+               events of sticky parents, the popup stays stuck at the original coordinates. We can fix
+               this by forcing the datepicker to reposition itself whenever its container scrolls.""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+        ],
+    },
+    {
+        "id": 3,
+        "avatar": 'VKproject/img/VKavatarka.png',
+        "Questions": [
+            """She  has the following problem. I created a desktop application to generate invoices for my dad's company.
+                The machine I wrote this application for is an iMac from 2011 running macOS High Sierra (10.13.6).
+                Because I have no Mac to test on and the age of the target system, I choose tkinter to implement the GUI
+                mainly for its cross-platform compatibility (and because i taught that tkinter is kind of old so it has good
+                chances to run on an old osx).""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+        ],
+        "Answers": [
+            """Why it happens --Zebra_DatePicker calculates the popup’s position once when it opens,
+               using the input’s offset() relative to <body> --When the input is inside a position:
+               sticky container, the input’s visual position changes during scroll, but its offset
+               relative to <body> does not change. --Because Zebra_DatePicker doesn’t listen to scroll
+               events of sticky parents, the popup stays stuck at the original coordinates. We can fix
+               this by forcing the datepicker to reposition itself whenever its container scrolls.""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+        ],
+    },
+    {
+        "id": 4,
+        "avatar": 'VKproject/img/VKavatarka.png',
+        "Questions": [
+            """He  has the following problem. I created a desktop application to generate invoices for my dad's company.
+                The machine I wrote this application for is an iMac from 2011 running macOS High Sierra (10.13.6).
+                Because I have no Mac to test on and the age of the target system, I choose tkinter to implement the GUI
+                mainly for its cross-platform compatibility (and because i taught that tkinter is kind of old so it has good
+                chances to run on an old osx).""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+        ],
+        "Answers": [
+            """Why it happens --Zebra_DatePicker calculates the popup’s position once when it opens,
+               using the input’s offset() relative to <body> --When the input is inside a position:
+               sticky container, the input’s visual position changes during scroll, but its offset
+               relative to <body> does not change. --Because Zebra_DatePicker doesn’t listen to scroll
+               events of sticky parents, the popup stays stuck at the original coordinates. We can fix
+               this by forcing the datepicker to reposition itself whenever its container scrolls.""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+        ],
+    },
+    {
+        "id": 5,
+        "avatar": 'VKproject/img/VKavatarka.png',
+        "Questions": [
+            """We  have the following problem. I created a desktop application to generate invoices for my dad's company.
+                The machine I wrote this application for is an iMac from 2011 running macOS High Sierra (10.13.6).
+                Because I have no Mac to test on and the age of the target system, I choose tkinter to implement the GUI
+                mainly for its cross-platform compatibility (and because i taught that tkinter is kind of old so it has good
+                chances to run on an old osx).""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+        ],
+        "Answers": [
+            """Why it happens --Zebra_DatePicker calculates the popup’s position once when it opens,
+               using the input’s offset() relative to <body> --When the input is inside a position:
+               sticky container, the input’s visual position changes during scroll, but its offset
+               relative to <body> does not change. --Because Zebra_DatePicker doesn’t listen to scroll
+               events of sticky parents, the popup stays stuck at the original coordinates. We can fix
+               this by forcing the datepicker to reposition itself whenever its container scrolls.""",
+            """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
+                the schematics ng add @angular/ssr which generated the following files:""",
+        ],
+    },
+]
+
 # Create your views here.
 def questions_page(request, *args, **kwargs):
     paginator = Paginator(QUESTIONS, per_page=2)
@@ -140,3 +325,22 @@ def settings_page(request, *args, **kwargs):
 
 def registration_page(request, *args, **kwargs):
     return render(request, 'VKproject/registration.html')
+
+def addQuestion(request):
+    return render(request, 'VKproject/addQuestion.html')
+
+def profile_member(request, id):
+    profile = next((q for q in PROFILE_MEMBERS if q["id"] == id), None)
+
+    if profile is None:
+        from django.http import Http404
+        raise Http404("Profile not found")
+
+    if not profile["Questions"]:
+        profile["Questions"] = ["The user has not asked any questions yet"]
+    if not profile["Answers"]:
+        profile["Answers"] = ["The user has not yet answered anyone's questions"]
+
+    return render(request, 'VKproject/profile_members.html', context={
+        "info_profile": profile,
+    })
