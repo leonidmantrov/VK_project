@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BrandName</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}?v=1.1">
+    {% block extra__styles %}{% endblock extra__styles %}
+</head>
+<body class="root">
+    {% block header %}
+	    <header class="header">
+        <div class="header__wrapper">
+            <div class="cap">
+                <span class="header__logo"><a href="{% url 'questions_page' %}" style="color: black">BrandName</a></span>
+            </div>
+            <div class="header__search">
+                <form action="{% url 'questions_by_tag' %}" method="get" class="d-flex gap-2">
+                    {% block header__input__search %}
+                        <input type="text" name="tag_name" class="header__search" placeholder="Search..." title="Для поиска по тегу оберните слово в квадратных скобках: [тег]" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                    {% endblock header__input__search %}
+                    {% block button__ASK %}
+                        <button type="submit" class="header__ASK">ASK!</button>
+                    {% endblock button__ASK %}
+                </form>
+            </div>
+            {% block header__profile %}
+            <div class="header__profile">
+                <img src="{% static 'so_project/img/profile.png' %}" alt="profile" class="header__profile__image">
+                <div class="header__profile__user">
+                    <span class="user__profile"><a href="{% url 'profile_member' id=1%}" style="color: black">Dr. Pepper</a></span>
+                    <div class="header__profile__action">
+                        <a class="text-secondary" href="{% url 'settings_page' %}">settings</a>
+                        <a class="text-secondary" href="#">logout</a>
+                    </div>
+                </div>
+            </div>
+            {% endblock header__profile %}
+
+            {% block header__register %}
+            <div class="header__register">
+                <a href="{% url 'login_page' %}">log in</a>
+                <a href="{% url 'registration_page' %}">register</a>
+            </div>
+            {% endblock header__register %}
+        </div>
+    </header>
+    {% endblock header %}
+    <main class="main container mt-4">
+        <div class="row g-4">
+            <section class="section col-12 col-md-8 col-lg-9 order-last order-md-first">
+                {% block sec__tit %}
+                <div class="section__title">
+                    {% block section__title %}{% endblock section__title %}
+                </div>
+                {% endblock sec__tit %}
+                {% block section %}{% endblock section %}
+            </section>
+
+            {% block aside %}
+                {% include "context_blocks/tags_members_block.html"%}
+            {% endblock aside %}
+        </div>
+    </main>
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">2026 BrandName. Все права защищены.</p>
+            <div class="mt-2">
+                <a href="#" class="text-secondary me-3">Политика конфиденциальности</a>
+                <a href="#" class="text-secondary">Контакты</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

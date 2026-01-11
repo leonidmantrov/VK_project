@@ -1,0 +1,54 @@
+.section__new__question{
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    max-width: 800px;
+}
+
+.question__field__name, .question__field__text, .question__field__tags{
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+    align-items: center;
+}
+
+.field__name, .fiels__text, .field__tags{
+    margin: 0px;
+    width: 60px;
+    flex-shrink: 0;
+}
+
+.question__name, .question__text, .question__tags{
+    padding: 10px;
+    width: 100%;
+    field-sizing: content;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+    line-height: 1.5;       /* Межстрочный интервал */
+    white-space: pre-wrap;  /* Сохраняет пробелы и переносы строк */
+    word-wrap: break-word;  /* Принудительно переносит длинные слова */
+}
+
+.question__text{
+    min-height: 150px;
+}
+
+.GO__new__question{
+    margin-left: 85px;
+    background-color: lightgray;
+    color: black !important;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    /* Плавный переход всех свойств за 0.3 секунды */
+    transition: all 0.3s ease;
+}
+
+.GO__new__question:hover {
+    background-color: lightgreen;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.04) !important; /* Кнопка чуть-чуть приподнимается */
+}

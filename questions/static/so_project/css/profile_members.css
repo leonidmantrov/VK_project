@@ -1,0 +1,33 @@
+.profile__member{
+    display: flex;
+    gap: 12px;
+}
+
+.member__profile__image{
+    width: 10%;
+    height: fit-content;
+}
+
+.info__activity{
+    margin-top: auto;
+}
+
+.total__questions, .total__answers{
+    margin-bottom: 0px;
+}
+
+.activity__member{
+    display: flex;
+    margin-top: 20px;
+    gap: 20px;
+}
+
+.card__activity{
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+}
+
+.num__vote{
+    margin-bottom: 0px;
+}

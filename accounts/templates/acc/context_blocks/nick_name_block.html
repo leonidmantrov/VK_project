@@ -1,0 +1,11 @@
+<div class="row mb-3">
+    <label for="inputNickName" class="col-sm-2 col-form-label">NickName</label>
+    <div class="col-sm-10">
+        <input type="text" name="nickname" class="form-control {% if NickName_error %}is-invalid{% endif %}"
+               id="inputNickName" value="{{ user_nickname }}" placeholder="Dr. Pepper" maxlength="30" required>
+        {% if NickName_error %}
+            <div class="invalid-feedback">{{ NickName_error }}</div>
+        {% endif %}
+        <div class="form-text">Максимум 30 символов.</div>
+    </div>
+</div>
