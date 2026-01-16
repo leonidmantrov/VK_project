@@ -1,0 +1,16 @@
+{
+    "database": {
+        "name": "vk_project_so",
+        "user": "root",
+        "password": "12Leonid05Mantrov2005.",
+        "host": "127.0.0.1",
+        "port": 3306
+    },
+    "django": {
+        "secret_key": "django-insecure-&(6g=lpgw6yo67nq0m0ms3$=o=bko(z5_fc=6^36i$avol0fb)",
+        "debug": true,
+        "allowed_hosts": ["localhost", "127.0.0.1"],
+        "language_code": "en-us",
+        "time_zone": "UTC"
+    }
+}

@@ -5,28 +5,39 @@
     <link rel="stylesheet" href="{% static 'so_project/css/add_question.css' %}">
 {% endblock question__styles %}
 
-{% block header__register %}{% endblock header__register %}
-
 {% block section__title %}
-    <h2>New Question</h2>
+    <h2>Новый вопрос</h2>
 {% endblock section__title %}
 
 {% block section %}
-    <div class="section__new__question">
-        <div class="question__field__name">
-            <p class="field__name">Title</p>
-            <textarea class="question__name" placeholder="Введите название вопроса" required></textarea>
+    {% if user.is_authenticated %}
+        <form method="post" class="section__new__question" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="question__field__name mb-3">
+                <label class="form-label field__name">Title</label>
+                <input type="text" class="form-control question__name" name="title" placeholder="Введите название вопроса" maxlength="255" required>
+            </div>
+
+            <div class="question__field__text mb-3">
+                <label class="form-label fiels__text">Text</label>
+                <textarea class="form-control question__text" name="text" placeholder="Опишите подробно вашу проблема" rows="8" required></textarea>
+            </div>
+
+            <div class="question__field__tags mb-3">
+                <label class="form-label field__tags">Tags</label>
+                <textarea class="form-control question__tags" name="tags" placeholder="Введите слова-триггеры (python, django, mysql)" rows="2"></textarea>
+            </div>
+
+            <div class="button__ASK__new__question">
+                <button type="submit" class="btn btn-primary GO__new__question">Задать вопрос</button>
+            </div>
+        </form>
+    {% else %}
+        <div class="alert alert-warning">
+            Чтобы задавать вопросы, пожалуйста,
+            <a href="{% url 'accounts:login_page' %}">войдите</a> или
+            <a href="{% url 'accounts:registration_page' %}">зарегистрируйтесь</a>.
         </div>
-        <div class="question__field__text">
-            <p class="fiels__text">Text</p>
-            <textarea class="question__text" placeholder="Введите сам вопрос" required></textarea>
-        </div>
-        <div class="question__field__tags">
-            <p class="field__tags">Tags</p>
-            <textarea class="question__tags" placeholder="Введите слова-триггеры, по которым другие пользователи смогут найти ваш вопрос" required></textarea>
-        </div>
-    </div>
-    <div class="button__ASK__new__question">
-        <button class="GO__new__question">ASK!</button>
-    </div>
+    {% endif %}
 {% endblock section %}

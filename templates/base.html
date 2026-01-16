@@ -6,17 +6,22 @@
     <title>BrandName</title>
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}?v=1.1">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/voting.js' %}"></script>
+    <meta name="csrf-token" content="{{ csrf_token }}">
     {% block extra__styles %}{% endblock extra__styles %}
 </head>
-<body class="root">
+<body class="root"
+      data-authenticated="{% if user.is_authenticated %}true{% else %}false{% endif %}"
+      data-user-id="{% if user.is_authenticated %}{{ user.id }}{% else %}0{% endif %}">
     {% block header %}
 	    <header class="header">
         <div class="header__wrapper">
             <div class="cap">
-                <span class="header__logo"><a href="{% url 'questions_page' %}" style="color: black">BrandName</a></span>
+                <span class="header__logo"><a href="{% url 'questions:questions_page' %}" style="color: black">BrandName</a></span>
             </div>
             <div class="header__search">
-                <form action="{% url 'questions_by_tag' %}" method="get" class="d-flex gap-2">
+                <form action="{% url 'questions:questions_by_tag' %}" method="get" class="d-flex gap-2">
                     {% block header__input__search %}
                         <input type="text" name="tag_name" class="header__search" placeholder="Search..." title="Для поиска по тегу оберните слово в квадратных скобках: [тег]" data-bs-toggle="tooltip" data-bs-placement="bottom">
                     {% endblock header__input__search %}
@@ -26,27 +31,40 @@
                 </form>
             </div>
             {% block header__profile %}
-            <div class="header__profile">
-                <img src="{% static 'so_project/img/profile.png' %}" alt="profile" class="header__profile__image">
-                <div class="header__profile__user">
-                    <span class="user__profile"><a href="{% url 'profile_member' id=1%}" style="color: black">Dr. Pepper</a></span>
-                    <div class="header__profile__action">
-                        <a class="text-secondary" href="{% url 'settings_page' %}">settings</a>
-                        <a class="text-secondary" href="#">logout</a>
-                    </div>
+                <div class="header__profile">
+                    {% if user.is_authenticated %}
+                        {% if user.avatar %}
+                            <img src="/media/{{ user.avatar }}" alt="profile" class="header__profile__image rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                        {% else %}
+                            <img src="{% static 'so_project/img/profile.png' %}" alt="profile" class="header__profile__image">
+                        {% endif %}
+                        <div class="header__profile__user">
+                            <span class="user__profile">
+                                <a href="{% url 'questions:profile_member' id=user.id %}" style="color: black">
+                                    {{ user.nickname|default:user.login }}
+                                </a>
+                            </span>
+                            <div class="header__profile__action">
+                                <a class="text-secondary" href="{% url 'accounts:settings_page' %}">settings</a>
+                                <a class="text-secondary" href="{% url 'accounts:logout' %}">logout</a>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
-            </div>
             {% endblock header__profile %}
 
             {% block header__register %}
-            <div class="header__register">
-                <a href="{% url 'login_page' %}">log in</a>
-                <a href="{% url 'registration_page' %}">register</a>
-            </div>
+                <div class="header__register">
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'accounts:login_page' %}">log in</a>
+                        <a href="{% url 'accounts:registration_page' %}">register</a>
+                    {% endif %}
+                </div>
             {% endblock header__register %}
         </div>
     </header>
     {% endblock header %}
+    {% block main %}
     <main class="main container mt-4">
         <div class="row g-4">
             <section class="section col-12 col-md-8 col-lg-9 order-last order-md-first">
@@ -63,6 +81,7 @@
             {% endblock aside %}
         </div>
     </main>
+    {% endblock main %}
     <footer class="bg-dark text-light py-4 mt-5">
         <div class="container text-center">
             <p class="mb-0">2026 BrandName. Все права защищены.</p>
@@ -72,6 +91,6 @@
             </div>
         </div>
     </footer>
-
+{% block extra_scripts %}{% endblock extra_scripts %}
 </body>
 </html>

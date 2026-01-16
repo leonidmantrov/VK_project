@@ -1,50 +1,64 @@
 {% extends "so_project/new_or_tag_Questions.html" %}
 {% load static %}
 
-
-{% block header__profile %}{% endblock header__profile %}
-
 {% block section__title %}
     <div class="info">
         <h2>New Questions</h2>
-        <a href="{% url 'questions_page' %}">Hot Questions</a>
+        <a href="{% url 'questions:questions_page' %}">Hot Questions</a>
     </div>
     <div class="ask">
-        <a href="{% url 'add_question' %}" class="btn btn-primary" >Ask Question</a>
+        <a href="{% url 'questions:add_question' %}" class="btn btn-primary">Ask Question</a>
     </div>
-
 {% endblock section__title %}
 
-
 {% block questions_list %}
-    {% for q in questions_page %}
-        <div class="card__question">
-            <div class="question__aside">
-                <img src="{% static q.avatar %}" alt="avatarka" class="questions__image">
-                <input type="number" value="{{ q.answer_count }}">
-            </div>
+    {% for q in questions_page.object_list %}
+        <div class="card__question mb-3 p-3 border rounded">
+            <div class="d-flex">
+                <!-- голосование и аватар -->
+                <div class="question__aside me-3 text-center" style="width: 80px;">
+                    {% include "so_project/include_blocks/vote_question_button_block.html" with show_total=False %}
 
-            <div class="question__content">
-                <h3 class="question__header">
-                    <a href="{% url 'answers_page_for_question' q.id %}">{{ q.question }}</a>
-                </h3>
-                <p class="question__description">
-                    {{ q.description_question }}
-                </p>
-                <div class="question__footer">
-                    <a href="{% url 'answers_page_for_question' q.id %}" class="question__answers">
-                        answers ({{ q.answer_count }})
-                    </a>
-                    <div class="question__tags">
-                        <span class="question__tags__title">Tags:</span>
-                        <div class="question__tags__list">
-                            {% for t in q.tags %}
-                                <a href="{% url 'questions_by_tag' %}?tag_name=[{{ t }}]">{{ t }}</a>
-                            {% endfor %}
+                    {% if q.id_u.avatar %}
+                        <img src="/media/{{ q.id_u.avatar }}" alt="avatar" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'so_project/img/profile.png' %}" alt="avatar" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                    {% endif %}
+                </div>
+
+                <!-- содержание -->
+                <div class="question__content flex-grow-1">
+                    <h5 class="question__header mb-2">
+                        <a href="{% url 'questions:answers_page_for_question' q.id_q %}" class="text-decoration-none">
+                            {{ q.title_question }}
+                        </a>
+                    </h5>
+                    <p class="question__description text-muted mb-2">
+                        {{ q.question|truncatewords:30 }}
+                    </p>
+                    <div class="question__footer d-flex justify-content-between align-items-center">
+                        <a href="{% url 'questions:answers_page_for_question' q.id_q %}" class="question__answers text-decoration-none">
+                            ответов: {{ q.answer_set.count }}
+                        </a>
+                        <div class="question__tags">
+                            <span class="question__tags__title text-muted me-2">Теги:</span>
+                            <div class="question__tags__list d-inline">
+                                {% for tag in q.tags.all %}
+                                    <a href="{% url 'questions:questions_by_tag' %}?tag_name={{ tag.tag }}"
+                                       class="badge bg-secondary text-decoration-none me-1">
+                                        {{ tag.tag }}
+                                    </a>
+                                {% endfor %}
+                            </div>
                         </div>
+                    </div>
+                    <div class="question__meta text-muted small mt-2">
+                        Автор: {{ q.id_u.nickname }} | {{ q.created_at_question|date:"d.m.Y H:i" }}
                     </div>
                 </div>
             </div>
         </div>
+    {% empty %}
+        <div class="alert alert-info">Вопросов пока нет. Будьте первым!</div>
     {% endfor %}
 {% endblock questions_list %}
