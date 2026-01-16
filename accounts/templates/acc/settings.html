@@ -3,7 +3,6 @@
 
 {% block header__input__search %}{% endblock header__input__search %}
 {% block button__ASK %}{% endblock button__ASK %}
-{% block header__register %}{% endblock header__register %}
 
 {% block section__title %}
     <h2>Settings</h2>
@@ -12,22 +11,30 @@
 {% block section %}
     <form method="post" enctype="multipart/form-data" class="mt-4">
         {% csrf_token %}
-        <!-- Поле Логина -->
-        {% include "acc/context_blocks/login_block.html" %}
-        <!-- Поле Почты -->
+        {% include "acc/context_blocks/login_block.html" with for_settings=True %}
         {% include "acc/context_blocks/email_block.html" %}
-        <!-- Поле имени -->
         {% include "acc/context_blocks/nick_name_block.html" %}
-        <!-- Поле пароля -->
-        {% include "acc/context_blocks/password_block.html" %}
-        <!-- Поле подтверждения пароля -->
-        {% include "acc/context_blocks/repeat_password_block.html" %}
-        <!-- Поле выбора Аватара -->
-        {% include "acc/context_blocks/image_block.html" %}
+
+        <!-- Раздел смены пароля -->
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Смена пароля</h5>
+            </div>
+            <div class="card-body">
+                {% include "acc/context_blocks/old_password_block.html" %}
+                {% include "acc/context_blocks/password_block.html" with for_settings=True %}
+                {% include "acc/context_blocks/repeat_password_block.html" with for_settings=True %}
+            </div>
+        </div>
+
+        {% include "acc/context_blocks/image_block.html" with for_registration=False %}
 
         <div class="row">
             <div class="col-sm-10 offset-sm-2">
                 <button type="submit" class="btn btn-primary">Save Changes</button>
+                <div class="mt-2">
+                    <a href="{% url 'questions:questions_page' %}" class="small text-decoration-none">← Вернуться на главную</a>
+                </div>
             </div>
         </div>
     </form>

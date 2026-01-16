@@ -2,26 +2,21 @@
     <div class="aside__tags">
         <span class="aside__title">Popular Tags</span>
         <div class="aside__tags__list">
-            <a href="{% url 'questions_by_tag' %}?tag_name=[perl]">perl</a>
-            <a href="{% url 'questions_by_tag' %}?tag_name=[python]">python</a>
-            <a href="{% url 'questions_by_tag' %}?tag_name=[macos]">macos</a>
-            <a href="{% url 'questions_by_tag' %}?tag_name=[tkinter]">tkinter</a>
-            <a href="{% url 'questions_by_tag' %}?tag_name=[angular]">angular</a>
-            <a href="{% url 'questions_by_tag' %}?tag_name=[gcc]">gcc</a>
-            <a href="{% url 'questions_by_tag' %}?tag_name=[snowflake-schema]">snowflake-schema</a>
-            <a href="{% url 'questions_by_tag' %}?tag_name=[swift]">swift</a>
-            <a href="{% url 'questions_by_tag' %}?tag_name=[swiftdata]">swiftdata</a>
-            <a href="{% url 'questions_by_tag' %}?tag_name=[compiler-bug]">compiler-bug</a>
+            {% for tag in popular_tags %}
+                <a href="{% url 'questions:questions_by_tag' %}?tag_name={{ tag.tag }}">{{ tag.tag }}</a>
+            {% empty %}
+                <span class="text-muted">Нет популярных тегов</span>
+            {% endfor %}
         </div>
     </div>
     <div class="aside_members">
         <span class="aside__title">Best Members</span>
         <div class="aside__members__list">
-            <a href="{% url 'profile_member' id=1%}">Mr. Freeman</a>
-            <a href="{% url 'profile_member' id=2%}">Dr. House</a>
-            <a href="{% url 'profile_member' id=3%}">Bender</a>
-            <a href="{% url 'profile_member' id=4%}">Queen Victoria</a>
-            <a href="{% url 'profile_member' id=5%}">V. Pupkin</a>
+            {% for member in best_members %}
+                <a href="{% url 'questions:profile_member' id=member.id %}">{{ member.nickname|default:member.login }}</a>
+            {% empty %}
+                <span class="text-muted">Нет активных пользователей</span>
+            {% endfor %}
         </div>
     </div>
 </aside>

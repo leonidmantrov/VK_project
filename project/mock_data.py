@@ -59,32 +59,22 @@ ANSWERS = [
     {
         "id": 1,
         "avatar": 'img/avatarka.png',
-        "description_answer": """Why it happens --Zebra_DatePicker calculates the popup’s position once when it opens,
-                                   using the input’s offset() relative to <body> --When the input is inside a position:
-                                   sticky container, the input’s visual position changes during scroll, but its offset
-                                   relative to <body> does not change. --Because Zebra_DatePicker doesn’t listen to scroll
-                                   events of sticky parents, the popup stays stuck at the original coordinates. We can fix
-                                   this by forcing the datepicker to reposition itself whenever its container scrolls.""",
+        "description_answer": """As this answer is now nearly 3 years old, I wanted to try the performance test made
+                                 by @Vivin again. So FYI, splitting 100k characters two by two using the given regex
+                                 is instantaneous on Chrome v33.""",
     },
     {
         "id": 2,
         "avatar": 'img/avatarka.png',
-        "description_answer": """Why it happens --Zebra_DatePicker calculates the popup’s position once when it opens,
-                                   using the input’s offset() relative to <body> --When the input is inside a position:
-                                   sticky container, the input’s visual position changes during scroll, but its offset
-                                   relative to <body> does not change. --Because Zebra_DatePicker doesn’t listen to scroll
-                                   events of sticky parents, the popup stays stuck at the original coordinates. We can fix
-                                   this by forcing the datepicker to reposition itself whenever its container scrolls.""",
+        "description_answer": """According to developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/…
+                                 you can match any character, including new lines, with [^]. With this your
+                                 example would result in str.match(/[^]{1,n}/g)""",
     },
     {
         "id": 3,
         "avatar": 'img/avatarka.png',
-        "description_answer": """Why it happens --Zebra_DatePicker calculates the popup’s position once when it opens,
-                                   using the input’s offset() relative to <body> --When the input is inside a position:
-                                   sticky container, the input’s visual position changes during scroll, but its offset
-                                   relative to <body> does not change. --Because Zebra_DatePicker doesn’t listen to scroll
-                                   events of sticky parents, the popup stays stuck at the original coordinates. We can fix
-                                   this by forcing the datepicker to reposition itself whenever its container scrolls.""",
+        "description_answer": """For anyone looking for really fast string chunking with performance benchmarks on jsperf,
+                                 see my answer. Using a regex is the slowest chunking method of all.""",
     },
 ]
 

@@ -3,7 +3,6 @@
 
 {% block header__input__search %}{% endblock header__input__search %}
 {% block button__ASK %}{% endblock button__ASK %}
-{% block header__profile %}{% endblock header__profile %}
 
 {% block section__title %}
     <h2>Registration</h2>
@@ -12,39 +11,19 @@
 {% block section %}
     <form method="post" enctype="multipart/form-data" class="mt-4">
         {% csrf_token %}
-        <!-- Поле Логина -->
-        {% include "acc/context_blocks/login_block.html" %}
-        <!-- Поле Почты -->
-        <div class="row mb-3">
-            <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
-            <div class="col-sm-10">
-                <input type="email" name="email" class="form-control {% if email_error %}is-invalid{% endif %}" id="inputEmail" placeholder="dr.pepper@example.com" required>
-                {% if email_error %}
-                    <div class="invalid-feedback">
-                        {{ email_error }}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <!-- Поле имени -->
+        {% include "acc/context_blocks/login_block.html" with for_settings=False %}
+        {% include "acc/context_blocks/email_block.html" %}
         {% include "acc/context_blocks/nick_name_block.html" %}
-        <!-- Поле пароля -->
-        {% include "acc/context_blocks/password_block.html" %}
-        <!-- Поле подтверждения пароля -->
-        {% include "acc/context_blocks/repeat_password_block.html" %}
-        <!-- Поле выбора Аватара -->
-        <div class="row mb-4">
-            <label class="col-sm-2 col-form-label">Upload avatar</label>
-            <div class="col-sm-10">
-                <div class="input-group">
-                    <input type="file" name="avatar" class="form-control" id="avatarUpload">
-                </div>
-            </div>
-        </div>
+        {% include "acc/context_blocks/password_block.html" with for_settings=False %}
+        {% include "acc/context_blocks/repeat_password_block.html" with for_settings=False %}
+        {% include "acc/context_blocks/image_block.html" with for_registration=True %}
 
         <div class="row">
             <div class="col-sm-10 offset-sm-2">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="submit" class="btn btn-primary">Register</button>
+                <div class="mt-2">
+                    <a href="{% url 'accounts:login_page' %}" class="small text-decoration-none">Already have an account? Log in</a>
+                </div>
             </div>
         </div>
     </form>

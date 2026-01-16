@@ -7,18 +7,17 @@
 {% endblock extra__styles %}
 
 
-
 {% block section %}
     <div class="questions__content">
         {% block questions_list %}{% endblock questions_list%}
     </div>
     <div class="questions__pagination">
         {% if questions_page.has_previous %}
-            <a href="{% url 'questions_page'  %}?page={{ questions_page.previous_page_number }}" class="btn btn-secondary questions__pagination__item">{{ questions_page.previous_page_number }}</a>
+            <a href="{% url 'questions:questions_page'  %}?page={{ questions_page.previous_page_number }}" class="btn btn-secondary questions__pagination__item">{{ questions_page.previous_page_number }}</a>
         {% endif %}
         <a class="btn questions__pagination__item" style="background-color:orange">{{ questions_page.number }}</a>
         {% if questions_page.has_next %}
-            <a href="{% url 'questions_page'  %}?page={{ questions_page.next_page_number }}" class="btn btn-secondary questions__pagination__item">{{ questions_page.next_page_number }}</a>
+            <a href="{% url 'questions:questions_page'  %}?page={{ questions_page.next_page_number }}" class="btn btn-secondary questions__pagination__item">{{ questions_page.next_page_number }}</a>
         {% endif %}
     </div>
 {% endblock section %}
