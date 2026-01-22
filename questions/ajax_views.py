@@ -7,7 +7,6 @@ from .models import Question, Answer, Vote, QuestionVote
 
 
 @require_POST
-@login_required
 def vote_question(request):
     try:
         data = json.loads(request.body)
@@ -45,7 +44,6 @@ def vote_question(request):
 
 
 @require_POST
-@login_required
 def vote_answer(request):
     try:
         data = json.loads(request.body)
@@ -81,7 +79,6 @@ def vote_answer(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 @require_POST
-@login_required
 def mark_correct_answer(request):
     try:
         data = json.loads(request.body)
@@ -117,4 +114,5 @@ def mark_correct_answer(request):
     except (Question.DoesNotExist, Answer.DoesNotExist):
         return JsonResponse({'error': 'Вопрос или ответ не найдены'}, status=404)
     except Exception as e:
+
         return JsonResponse({'error': str(e)}, status=500)
