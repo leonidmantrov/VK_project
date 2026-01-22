@@ -1,33 +1,33 @@
 {% load static %}
 
 <div class="vote-buttons text-center" style="width: 80px;">
-    <button class="btn btn-sm {% if question.user_vote == 1 %}btn-primary{% else %}btn-outline-primary{% endif %} question-vote"
-            data-id="{{ question.id_q }}"
+    <button class="btn btn-sm {% if question_text.user_vote == 1 %}btn-primary{% else %}btn-outline-primary{% endif %} question_text-vote"
+            data-id="{{ question_text.id }}"
             data-value="1"
-            onclick="voteQuestion({{ question.id_q }}, 1)"
+            onclick="voteQuestion({{ question_text.id }}, 1)"
             title="Нравится"
-            {% if not user.is_authenticated %}disabled{% endif %}>
+            {% if not user.is_authenticated or question_text.user.id == user.id %}disabled{% endif %}>
         👍
     </button>
 
     <div class="my-2">
-        <span id="question-{{ question.id_q }}-rating" class="fw-bold">
-            {{ question.rating|default:0 }}
+        <span id="question_text-{{ question_text.id }}-rating" class="fw-bold">
+            {{ question_text.rating|default:0 }}
         </span>
     </div>
 
-    <button class="btn btn-sm {% if question.user_vote == -1 %}btn-primary{% else %}btn-outline-primary{% endif %} question-vote"
-            data-id="{{ question.id_q }}"
+    <button class="btn btn-sm {% if question_text.user_vote == -1 %}btn-primary{% else %}btn-outline-primary{% endif %} question_text-vote"
+            data-id="{{ question_text.id }}"
             data-value="-1"
-            onclick="voteQuestion({{ question.id_q }}, -1)"
+            onclick="voteQuestion({{ question_text.id }}, -1)"
             title="Не нравится"
-            {% if not user.is_authenticated %}disabled{% endif %}>
+            {% if not user.is_authenticated or question_text.user.id == user.id %}disabled{% endif %}>
         👎
     </button>
 
     {% if show_total %}
     <div class="small text-muted mt-1">
-        голосов: <span id="question-{{ question.id_q }}-total">{{ question.total_votes|default:0 }}</span>
+        голосов: <span id="question_text-{{ question_text.id }}-total">{{ question_text.total_votes|default:0 }}</span>
     </div>
     {% endif %}
 </div>

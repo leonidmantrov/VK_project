@@ -1,10 +1,16 @@
+<!-- так_project/index.html -->
 {% extends "so_project/new_or_tag_Questions.html" %}
 {% load static %}
 
 {% block section__title %}
     <div class="info">
-        <h2>New Questions</h2>
-        <a href="{% url 'questions:questions_page' %}">Hot Questions</a>
+        {% if sorting_type == "new_questions" %}
+            <h2>New Questions</h2>
+            <a href="{% url 'questions:hot_questions_page' %}">Hot Questions</a>
+        {% elif sorting_type == "hot_questions" %}
+            <h2>Hot Questions</h2>
+            <a href="{% url 'questions:questions_page' %}">New Questions</a>
+        {% endif %}
     </div>
     <div class="ask">
         <a href="{% url 'questions:add_question' %}" class="btn btn-primary">Ask Question</a>
@@ -16,44 +22,39 @@
         <div class="card__question mb-3 p-3 border rounded">
             <div class="d-flex">
                 <!-- голосование и аватар -->
-                <div class="question__aside me-3 text-center" style="width: 80px;">
-                    {% include "so_project/include_blocks/vote_question_button_block.html" with show_total=False %}
-
-                    {% if q.id_u.avatar %}
-                        <img src="/media/{{ q.id_u.avatar }}" alt="avatar" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
-                    {% else %}
-                        <img src="{% static 'so_project/img/profile.png' %}" alt="avatar" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
-                    {% endif %}
+                <div class="question__aside">
+                    {% include "so_project/include_blocks/vote_question_button_block.html" with question_text=q show_total=False %}
+                    <img src="{{ q.user.get_avatar_url }}" alt="avatar" class="rounded-circle">
                 </div>
 
                 <!-- содержание -->
                 <div class="question__content flex-grow-1">
                     <h5 class="question__header mb-2">
-                        <a href="{% url 'questions:answers_page_for_question' q.id_q %}" class="text-decoration-none">
+                        <a href="{% url 'questions:answers_page_for_question' q.id %}" class="text-decoration-none">
                             {{ q.title_question }}
                         </a>
                     </h5>
                     <p class="question__description text-muted mb-2">
-                        {{ q.question|truncatewords:30 }}
+                        {{ q.question_text|truncatewords:30 }}
                     </p>
-                    <div class="question__footer d-flex justify-content-between align-items-center">
-                        <a href="{% url 'questions:answers_page_for_question' q.id_q %}" class="question__answers text-decoration-none">
-                            ответов: {{ q.answer_set.count }}
+                    <div class="question__footer">
+                        <a href="{% url 'questions:answers_page_for_question' q.id %}" class="question__answers text-decoration-none">
+                            ответов: {{ q.answers_count }}
                         </a>
                         <div class="question__tags">
                             <span class="question__tags__title text-muted me-2">Теги:</span>
                             <div class="question__tags__list d-inline">
-                                {% for tag in q.tags.all %}
-                                    <a href="{% url 'questions:questions_by_tag' %}?tag_name={{ tag.tag }}"
+                                {% for tag_text in q.tags.all %}
+                                    <a href="{% url 'questions:questions_by_tag' %}?tag_name=[{{ tag_text.tag_text }}]"
                                        class="badge bg-secondary text-decoration-none me-1">
-                                        {{ tag.tag }}
+                                        {{ tag_text.tag_text }}
                                     </a>
                                 {% endfor %}
                             </div>
                         </div>
                     </div>
                     <div class="question__meta text-muted small mt-2">
-                        Автор: {{ q.id_u.nickname }} | {{ q.created_at_question|date:"d.m.Y H:i" }}
+                        Автор: {{ q.user.nickname }} | {{ q.created_at_question|date:"d.m.Y H:i" }}
                     </div>
                 </div>
             </div>

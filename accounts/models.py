@@ -1,6 +1,9 @@
-# accounts/models.py (более простой вариант)
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from questions.models import Question, Answer
+from django.conf import settings
+from django.db.models import F, Sum
+from django.db.models.functions import Coalesce
 
 
 class UserManager(BaseUserManager):
@@ -33,6 +36,7 @@ class User(AbstractUser):
     login = models.CharField(max_length=255, unique=True, verbose_name='Логин')
     nickname = models.CharField(max_length=255, verbose_name='Никнейм')
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, verbose_name='Аватар')
+    rating = models.IntegerField(default=0, verbose_name='Рейтинг')
 
     objects = UserManager()
 
@@ -44,3 +48,33 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.nickname} ({self.login})"
+
+    def get_avatar_url(self):
+        if self.avatar:
+            return self.avatar.url # self.avatar.url вернет /media/avatars/filename.jpg
+        return f"{settings.STATIC_URL}img/avatarka.png"
+
+    def update_rating(self, delta=None, recalc=False):
+        if recalc:
+            # Полный пересчёт (для инициализации)
+            question_sum = Question.objects.filter(user=self
+            ).aggregate(total=Coalesce(Sum('received_question_votes__vote_value'), 0))['total']
+
+            answer_sum = Answer.objects.filter(user=self
+            ).aggregate(total=Coalesce(Sum('received_answer_votes__vote_value'), 0))['total']
+
+            new_rating = question_sum + answer_sum
+
+            if self.rating != new_rating:
+                self.rating = new_rating
+                self.save(update_fields=['rating'])
+
+            return new_rating
+
+        elif delta is not None:
+            User.objects.filter(id=self.id).update(rating=F('rating') + delta)
+            self.refresh_from_db(fields=['rating'])
+            return self.rating
+
+        else:
+            return self.rating

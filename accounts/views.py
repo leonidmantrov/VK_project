@@ -1,111 +1,79 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, SettingsForm
 from .models import User
-
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.contrib import messages
 
 def registration_page(request):
     if request.method == 'POST':
+
         form = RegistrationForm(request.POST, request.FILES)
 
         if form.is_valid():
-            user = User.objects.create_user(
-                login=form.cleaned_data['login'],
-                email=form.cleaned_data['email'],
-                nickname=form.cleaned_data['nickname'],
-                password=form.cleaned_data['password']
-            )
-
-            if 'avatar' in request.FILES:
-                user.avatar = request.FILES['avatar']
-                user.save()
-
+            user = form.save()
             login(request, user)
             return redirect('questions:questions_page')
+        else:
+            print("Ошибки формы:", form.errors)
 
-        return render(request, 'acc/registration.html', {
-            'form': form,
-            'login_error': form.errors.get('login'),
-            'email_error': form.errors.get('email'),
-            'password_error': form.errors.get('__all__'),
-            'user_login': request.POST.get('login', ''),
-            'user_email': request.POST.get('email', ''),
-            'user_nickname': request.POST.get('nickname', ''),
-        })
+        return render(request, 'acc/registration.html', {'form': form})
 
-    return render(request, 'acc/registration.html')
-
+    form = RegistrationForm()
+    return render(request, 'acc/registration.html', {'form': form})
 
 def login_page(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
 
         if form.is_valid():
-            login_value = form.cleaned_data['login']
-            password = form.cleaned_data['password']
-            try:
-                user = User.objects.get(login=login_value)
-            except User.DoesNotExist:
-                return render(request, 'acc/login.html', {
-                    'login_error': 'Пользователь с таким логином не найден',
-                    'user_login': login_value,
-                })
+            user = form.cleaned_data['user']
+            login(request, user)
 
-            if user.check_password(password):
-                login(request, user)
-                return redirect('questions:questions_page')
-            else:
-                return render(request, 'acc/login.html', {
-                    'password_error': 'Неверный пароль',
-                    'user_login': login_value,
-                })
+            next_url = request.GET.get('next')
+            if next_url:
+                # редирект только на разрешенные хосты
+                if url_has_allowed_host_and_scheme(
+                        url=next_url,
+                        allowed_hosts={request.get_host()},  # текущий хост
+                        require_https=request.is_secure()
+                ):
+                    return redirect(next_url)
+            return redirect('questions:questions_page')
 
         return render(request, 'acc/login.html', {
-            'login_error': form.errors.get('login'),
-            'password_error': form.errors.get('password'),
+            'form': form,
             'user_login': request.POST.get('login', ''),
         })
 
-    return render(request, 'acc/login.html')
-
+    form = LoginForm()
+    return render(request, 'acc/login.html', {'form': form})
 
 def settings_page(request):
     if not request.user.is_authenticated:
         return redirect('accounts:login_page')
 
+    user = request.user
+
     if request.method == 'POST':
-        user = request.user
-        user.email = request.POST.get('email', user.email)
-        user.nickname = request.POST.get('nickname', user.nickname)
+        form = SettingsForm(request.POST, request.FILES, instance=user, user=user)
 
-        if 'avatar' in request.FILES:
-            user.avatar = request.FILES['avatar']
-
-        old_password = request.POST.get('old_password', '')
-        new_password = request.POST.get('password', '')
-
-        if new_password:
-            if not user.check_password(old_password):
-                return render(request, 'acc/settings.html', {
-                    'user': user,
-                    'password_error': 'Старый пароль неверен',
-                })
-            user.set_password(new_password)
-
-        user.save()
-        if new_password:
+        if form.is_valid():
+            user = form.save()
+            # Обновляем сессию, если пароль был изменен
             from django.contrib.auth import update_session_auth_hash
             update_session_auth_hash(request, user)
-
-        return redirect('accounts:settings_page')
+            messages.success(request, 'Настройки успешно сохранены!')
+            return redirect('accounts:settings_page')
+        else:
+            messages.error(request, 'Пожалуйста, исправьте ошибки в форме.')
+    else:
+        form = SettingsForm(instance=user, user=user)
 
     return render(request, 'acc/settings.html', {
-        'user': request.user,
-        'user_login': request.user.login,
-        'user_email': request.user.email,
-        'user_nickname': request.user.nickname,
+        'form': form,
+        'user': user
     })
-
 
 def logout_page(request):
     logout(request)

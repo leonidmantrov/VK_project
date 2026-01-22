@@ -44,12 +44,12 @@ class Command(BaseCommand):
 
             num_answers = ratio * 100
             self.stdout.write(f'5. Создаем {num_answers} ответов...')
-            answers = self.create_answers(num_answers, users, questions, fake, batch_size)
-            self.stdout.write(self.style.SUCCESS(f'   ✓ Создано {len(answers)} ответов'))
+            answer_text = self.create_answers(num_answers, users, questions, fake, batch_size)
+            self.stdout.write(self.style.SUCCESS(f'   ✓ Создано {len(answer_text)} ответов'))
 
             num_votes = ratio * 200
             self.stdout.write(f'6. Создаем {num_votes} голосов...')
-            votes_count = self.create_votes(num_votes, users, questions, answers, batch_size)
+            votes_count = self.create_votes(num_votes, users, questions, answer_text, batch_size)
             self.stdout.write(self.style.SUCCESS(f'   ✓ Создано {votes_count} голосов'))
 
         self.print_statistics()
@@ -90,20 +90,43 @@ class Command(BaseCommand):
         return list(User.objects.filter(login__in=[u.login for u in users]))
 
     def create_tags(self, num_tags, fake, batch_size):
-        tags = []
-        existing_tags = set(Tag.objects.values_list('tag', flat=True))
+        self.stdout.write(f'   Генерация {num_tags} уникальных тегов...')
 
-        for i in range(num_tags):
-            while True:
-                tag_name = fake.word()
-                if tag_name not in existing_tags:
-                    existing_tags.add(tag_name)
-                    break
+        # Генерируем с запасом
+        needed = num_tags
+        created_count = 0
+        all_tags = []
 
-            tags.append(Tag(tag=tag_name[:50]))
+        while created_count < num_tags:
+            # Генерируем порцию с запасом 20%
+            batch_needed = min((num_tags - created_count) * 12 // 10, 10000)
+            candidates = set()
 
-        Tag.objects.bulk_create(tags, batch_size=batch_size)
-        return list(Tag.objects.filter(tag__in=[t.tag for t in tags]))
+            while len(candidates) < batch_needed:
+                candidates.add(fake.word().lower()[:50])
+
+            # Проверяем существующие
+            existing = set(Tag.objects.filter(
+                tag_text__in=candidates
+            ).values_list('tag_text', flat=True))
+
+            # Создаем новые
+            new_names = candidates - existing
+            if not new_names:
+                # Если все слова заняты, добавляем суффикс
+                new_names = {f"{name}_{random.randint(1000, 9999)}" for name in candidates}
+
+            tags = [Tag(tag_text=name) for name in new_names]
+            Tag.objects.bulk_create(tags, batch_size=batch_size, ignore_conflicts=True)
+            created_count += len(tags)
+            all_tags.extend(tags)
+
+            # Для очень больших объемов - промежуточный вывод
+            if created_count % 10000 == 0:
+                self.stdout.write(f'   Создано {created_count}/{num_tags} тегов...')
+
+        # Возвращаем ВСЕ теги из базы для связей
+        return list(Tag.objects.all())
 
     def create_questions(self, num_questions, users, fake, batch_size):
         questions = []
@@ -111,9 +134,9 @@ class Command(BaseCommand):
         for i in range(num_questions):
             user = random.choice(users)
             questions.append(Question(
-                id_u=user,
+                user=user,
                 title_question=fake.sentence()[:250],
-                question=fake.text(max_nb_chars=1000),
+                question_text=fake.text(max_nb_chars=1000),
                 created_at_question=fake.date_time_between(
                     start_date=user.date_joined,
                     end_date='now',
@@ -129,142 +152,165 @@ class Command(BaseCommand):
         if not questions or not tags:
             return 0
 
+        # Подготовка данных
+        tag_ids = [t.id for t in tags]
+        question_ids = [q.id for q in questions]
+
+        # Загружаем существующие связи одним запросом
+        existing_pairs = set(
+            QuestionTag.objects.filter(
+                question_id__in=question_ids,
+                tag_id__in=tag_ids
+            ).values_list('question_id', 'tag_id')
+        )
+
         question_tags = []
+        created_count = 0
 
         for question in questions:
-            num_tags = random.randint(1, min(3, len(tags)))
-            selected_tags = random.sample(tags, num_tags)
+            # Выбираем уникальные теги для вопроса
+            selected_ids = random.sample(tag_ids, random.randint(1, min(3, len(tag_ids))))
 
-            for tag in selected_tags:
-                question_tags.append(QuestionTag(
-                    id_q=question,
-                    id_t=tag
-                ))
+            for tid in selected_ids:
+                pair = (question.id, tid)
 
+                # Проверяем, не существует ли уже такая связь
+                if pair not in existing_pairs:
+                    question_tags.append(QuestionTag(
+                        question_id=question.id,
+                        tag_id=tid
+                    ))
+                    existing_pairs.add(pair)
+                    created_count += 1
+
+                    # Батч-вставка
+                    if len(question_tags) >= batch_size:
+                        QuestionTag.objects.bulk_create(question_tags, ignore_conflicts=True)
+                        question_tags = []
+
+        # Остатки
         if question_tags:
-            QuestionTag.objects.bulk_create(question_tags, batch_size=batch_size)
+            QuestionTag.objects.bulk_create(question_tags, ignore_conflicts=True)
 
-        return len(question_tags)
+        return created_count
 
     def create_answers(self, num_answers, users, questions, fake, batch_size):
         if not questions:
             self.stdout.write(self.style.WARNING('   Нет вопросов для ответов!'))
             return []
 
-        answers = []
+        # Подготовка ID для генерации (но возвращать будем объекты)
+        u_ids = [u.id for u in users]
+        q_data = {q.id: q.created_at_question for q in questions}
+        q_ids = list(q_data.keys())
+
+        temp_answers = []
+        self.stdout.write(f'   Создание {num_answers} ответов...')
 
         for i in range(num_answers):
-            question = random.choice(questions)
-            user = random.choice(users)
+            qid = random.choice(q_ids)
 
-            answers.append(Answer(
-                id_u=user,
-                id_q=question,
-                answers=fake.text(max_nb_chars=500),
+            temp_answers.append(Answer(
+                user_id=random.choice(u_ids),
+                question_id=qid,
+                answer_text=fake.text(max_nb_chars=500),
                 created_at_answer=fake.date_time_between(
-                    start_date=question.created_at_question,
+                    start_date=q_data[qid],
                     end_date='now',
                     tzinfo=timezone.get_current_timezone()
                 )
             ))
 
-        Answer.objects.bulk_create(answers, batch_size=batch_size)
+            # Сбрасываем пачками, чтобы Python не "съел" всю оперативку
+            if len(temp_answers) >= batch_size:
+                Answer.objects.bulk_create(temp_answers)
+                temp_answers = []
 
-        question_ids_with_answers = Answer.objects.values_list('id_q_id', flat=True).distinct()
-        Question.objects.filter(id_q__in=question_ids_with_answers).update(has_answers=True)
+        if temp_answers:
+            Answer.objects.bulk_create(temp_answers)
 
-        return list(Answer.objects.order_by('-created_at_answer')[:num_answers])
+        # 1. Обновляем статус вопросов в MySQL
+        self.stdout.write('   Обновление статусов вопросов...')
+        answered_q_ids = Answer.objects.values_list('question_id', flat=True).distinct()
+        Question.objects.filter(id__in=answered_q_ids).update(has_answers=True)
+
+        # 2. Возвращаем объекты.
+        # ВАЖНО: Мы делаем срез [:num_answers], чтобы вернуть только то, что создали сейчас.
+        # Мы перечитываем их из базы, чтобы у них появились ID, необходимые для голосов.
+        self.stdout.write('   Загрузка объектов для следующего шага...')
+        return list(Answer.objects.order_by('-id')[:num_answers])
 
     def create_votes(self, num_votes, users, questions, answers, batch_size):
-        total_votes = 0
+        # 1. Подготовка ID
+        user_ids = [u.id for u in users]
+        answer_ids = [a.id for a in answers]
 
-        # Голоса за вопросы
-        if questions:
-            question_votes = []
-            existing_votes = set()
+        # 2. Проверка на пустые списки
+        if not user_ids or not answer_ids:
+            self.stdout.write(self.style.WARNING('   Нет пользователей или ответов'))
+            return 0
 
-            # Получаем существующие голоса
-            existing_q_votes = QuestionVote.objects.filter(
-                id_u__in=[u.id for u in users],
-                id_q__in=[q.id_q for q in questions]
-            ).values_list('id_u_id', 'id_q_id')
-            existing_votes.update(existing_q_votes)
+        # 3. Расчет лимитов
+        max_possible = len(user_ids) * len(answer_ids)
+        votes_to_create = min(num_votes // 2, max_possible)
 
-            # Новые голоса
-            max_possible = len(users) * len(questions)
-            votes_to_create = min(num_votes // 2, max_possible - len(existing_q_votes))
+        if votes_to_create <= 0:
+            self.stdout.write(self.style.WARNING('   Нет голосов для создания'))
+            return 0
 
-            created = 0
-            attempts = 0
-            max_attempts = votes_to_create * 10
+        self.stdout.write(f'   Генерация {votes_to_create} голосов...')
 
-            while created < votes_to_create and attempts < max_attempts:
-                user = random.choice(users)
-                question = random.choice(questions)
-
-                key = (user.id, question.id_q)
-                if key not in existing_votes:
-                    question_votes.append(QuestionVote(
-                        id_u=user,
-                        id_q=question,
+        # Сценарий А: Заполнить ВСЕ возможные комбинации
+        if votes_to_create == max_possible:
+            votes = []
+            for uid in user_ids:
+                for aid in answer_ids:
+                    votes.append(Vote(
+                        user_id=uid,
+                        answer_id=aid,
                         vote_value=random.choice([1, -1])
                     ))
-                    existing_votes.add(key)
-                    created += 1
-                attempts += 1
+                    if len(votes) >= batch_size:
+                        Vote.objects.bulk_create(votes, ignore_conflicts=True)
+                        votes = []
+            if votes:
+                Vote.objects.bulk_create(votes, ignore_conflicts=True)
+            return votes_to_create
 
-            if question_votes:
-                for i in range(0, len(question_votes), batch_size):
-                    batch = question_votes[i:i + batch_size]
-                    QuestionVote.objects.bulk_create(batch, ignore_conflicts=True)
+        # Сценарий Б: Выборочное заполнение
+        used_pairs = set()
+        votes = []
 
-                total_votes += len(question_votes)
-                self.stdout.write(self.style.SUCCESS(f'   → {len(question_votes)} голосов за вопросы'))
+        for i in range(votes_to_create):
+            # Поиск уникальной пары (оптимизированный random)
+            while True:
+                uid = user_ids[random.randint(0, len(user_ids) - 1)]
+                aid = answer_ids[random.randint(0, len(answer_ids) - 1)]
+                pair = (uid, aid)
+                if pair not in used_pairs:
+                    used_pairs.add(pair)
+                    break
 
-        # Голоса за ответы
-        if answers:
-            answer_votes = []
-            existing_votes = set()
+            votes.append(Vote(
+                user_id=uid,
+                answer_id=aid,
+                vote_value=random.choice([1, -1])
+            ))
 
-            # Существующие голоса за ответы
-            existing_a_votes = Vote.objects.filter(
-                id_u__in=[u.id for u in users],
-                id_an__in=[a.id_an for a in answers]
-            ).values_list('id_u_id', 'id_an_id')
-            existing_votes.update(existing_a_votes)
+            # Сброс батча
+            if len(votes) >= batch_size:
+                Vote.objects.bulk_create(votes, ignore_conflicts=True)
+                votes = []
 
-            # Новые голоса
-            max_possible = len(users) * len(answers)
-            votes_to_create = min(num_votes // 2, max_possible - len(existing_a_votes))
+                # Очистка set при большом объеме
+                if len(used_pairs) > 5_000_000:
+                    used_pairs.clear()
 
-            created = 0
-            attempts = 0
-            max_attempts = votes_to_create * 10
+        # Запись остатков
+        if votes:
+            Vote.objects.bulk_create(votes, ignore_conflicts=True)
 
-            while created < votes_to_create and attempts < max_attempts:
-                user = random.choice(users)
-                answer = random.choice(answers)
-
-                key = (user.id, answer.id_an)
-                if key not in existing_votes:
-                    answer_votes.append(Vote(
-                        id_u=user,
-                        id_an=answer,
-                        vote_value=random.choice([1, -1])
-                    ))
-                    existing_votes.add(key)
-                    created += 1
-                attempts += 1
-
-            if answer_votes:
-                for i in range(0, len(answer_votes), batch_size):
-                    batch = answer_votes[i:i + batch_size]
-                    Vote.objects.bulk_create(batch, ignore_conflicts=True)
-
-                total_votes += len(answer_votes)
-                self.stdout.write(self.style.SUCCESS(f'   → {len(answer_votes)} голосов за ответы'))
-
-        return total_votes
+        return votes_to_create
 
     def print_statistics(self):
         self.stdout.write(self.style.SUCCESS('\n' + '=' * 50))

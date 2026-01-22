@@ -1,43 +1,44 @@
 {% load static %}
 
 <div class="row mb-4">
-    <label class="col-sm-2 col-form-label">Avatar</label>
+    <label for="id_{{ field.name }}" class="col-sm-2 col-form-label">Your profile photo</label>
     <div class="col-sm-10">
         <div class="mb-3 d-flex align-items-center gap-3">
-            {% if user.avatar and not for_registration %}
-                <img src="/media/{{ user.avatar }}"
-                     id="avatarPreview"
-                     alt="Current Avatar"
-                     class="rounded-circle border"
-                     style="width: 80px; height: 80px; object-fit: cover;">
-                <div class="form-text">Текущее изображение</div>
+            {% if user and user.avatar %}
+                <img src="{{ user.avatar.url }}" id="avatarPreview" alt="Current Avatar" class="rounded-circle border" style="width: 80px; height: 80px; object-fit: cover;">
             {% else %}
-                <img src="{% static 'img/avatarka.png' %}"
-                     id="avatarPreview"
-                     alt="Current Avatar"
-                     class="rounded-circle border"
-                     style="width: 80px; height: 80px; object-fit: cover;">
-                <div class="form-text">{% if for_registration %}Предпросмотр{% else %}Изображение по умолчанию{% endif %}</div>
+                <img src="{% static 'img/avatarka.png' %}" id="avatarPreview" alt="Default Avatar" class="rounded-circle border" style="width: 80px; height: 80px; object-fit: cover;">
             {% endif %}
+            <div class="form-text">
+                {{ field.help_text|default:"Изображение профиля" }}
+            </div>
         </div>
 
         <div class="input-group">
-            <input type="file" name="avatar"
-                   class="form-control {% if avatar_error %}is-invalid{% endif %}"
-                   id="avatarUpload"
+            <input type="file"
+                   name="{{ field.html_name }}"
+                   class="form-control {% if field.errors %}is-invalid{% endif %}"
+                   id="id_{{ field.name }}"
                    accept="image/*">
-            {% if avatar_error %}
-                <div class="invalid-feedback">{{ avatar_error }}</div>
+            {% if field.errors %}
+                <div class="invalid-feedback">
+                    {% for error in field.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
             {% endif %}
         </div>
-        <div class="form-text">Максимум 5MB. Разрешены JPG, PNG, GIF</div>
+        {% if field.help_text %}
+            <div class="form-text">{{ field.help_text }}</div>
+        {% else %}
+            <div class="form-text">Максимум 5MB. Разрешены JPG, PNG, GIF</div>
+        {% endif %}
     </div>
 </div>
 
 <script>
-    // Скрипт для предпросмотра выбранного аватара
     document.addEventListener('DOMContentLoaded', function() {
-        const upload = document.getElementById('avatarUpload');
+        const upload = document.getElementById('id_{{ field.name }}');
         const preview = document.getElementById('avatarPreview');
 
         if (upload && preview) {

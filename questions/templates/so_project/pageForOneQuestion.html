@@ -13,33 +13,29 @@
             <div class="d-flex">
                 <div class="question__aside me-3 text-center" style="width: 80px;">
                     {% include "so_project/include_blocks/vote_question_button_block.html" with show_total=True %}
-                    {% if question.id_u.avatar %}
-                        <img src="/media/{{ question.id_u.avatar }}" alt="avatar" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
-                    {% else %}
-                        <img src="{% static 'so_project/img/profile.png' %}" alt="avatar" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
-                    {% endif %}
+                    <img src="{{ question_text.user.get_avatar_url }}" alt="avatar" class="rounded-circle">
                 </div>
 
                 <!-- содержание вопроса -->
                 <div class="question__content flex-grow-1">
-                    <h3 class="question__header mb-3">{{ question.title_question }}</h3>
+                    <h3 class="question__header mb-3">{{ question_text.title_question }}</h3>
                     <p class="question__description mb-3">
-                        {{ question.question|linebreaks }}
+                        {{ question_text.question_text|linebreaks }}
                     </p>
                     <div class="question__footer d-flex justify-content-between align-items-center">
                         <div class="question__tags">
                             <span class="question__tags__title"><strong>Теги:</strong></span>
                             <div class="question__tags__list d-inline ms-2">
-                                {% for tag in question.tags.all %}
-                                    <a href="{% url 'questions:questions_by_tag' %}?tag_name={{ tag.tag }}"
+                                {% for tag_text in question_text.tags.all %}
+                                    <a href="{% url 'questions:questions_by_tag' %}?tag_name=[{{ tag_text.tag_text }}]"
                                        class="badge bg-secondary text-decoration-none me-1">
-                                        {{ tag.tag }}
+                                        {{ tag_text.tag_text }}
                                     </a>
                                 {% endfor %}
                             </div>
                         </div>
                         <div class="question__meta text-muted">
-                            Автор: {{ question.id_u.nickname }} | {{ question.created_at_question|date:"d.m.Y H:i" }}
+                            Автор: {{ question_text.user.nickname }} | {{ question_text.created_at_question|date:"d.m.Y H:i" }}
                         </div>
                     </div>
                 </div>
@@ -48,25 +44,21 @@
     </div>
 
     <div class="answers__content mb-4">
-        <h4 class="mb-3">Ответы ({{ answers|length }})</h4>
+        <h4 class="mb-3">Ответы ({{ answer_text|length }})</h4>
 
-        {% for answer in answers %}
+        {% for answer in answer_text %}
             <div class="card__answers mb-3 p-3 border rounded {% if answer.is_correct %}border-success bg-light{% endif %}"
-                 id="answer-{{ answer.id_an }}">
+                 id="answer-{{ answer.id }}">
                 <div class="d-flex">
                     <div class="question__aside me-3 text-center" style="width: 80px;">
                         {% include "so_project/include_blocks/vote_answer_button_block.html" with show_total=True %}
-                        {% if answer.id_u.avatar %}
-                            <img src="/media/{{ answer.id_u.avatar }}" alt="avatar" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
-                        {% else %}
-                            <img src="{% static 'so_project/img/profile.png' %}" alt="avatar" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
-                        {% endif %}
+                        <img src="{{ answer.user.get_avatar_url }}" alt="avatar" class="rounded-circle">
                     </div>
 
                     <!-- содержание ответа -->
                     <div class="question__content flex-grow-1">
                         <p class="question__description mb-3">
-                            {{ answer.answers|linebreaks }}
+                            {{ answer.answer_text|linebreaks }}
                         </p>
 
                         <div class="question__footer d-flex justify-content-between align-items-center">
@@ -74,16 +66,16 @@
                                 {% if answer.is_correct %}
                                     <span class="badge bg-success">✅ Правильный ответ</span>
                                 {% elif can_mark_correct %}
-                                    <button id="mark-correct-{{ answer.id_an }}"
+                                    <button id="mark-correct-{{ answer.id }}"
                                             class="btn btn-outline-success btn-sm"
-                                            onclick="markCorrectAnswer({{ question.id_q }}, {{ answer.id_an }})">
+                                            onclick="markCorrectAnswer({{ question_text.id }}, {{ answer.id }})">
                                         <span>✔</span> Correct!
                                     </button>
                                 {% endif %}
                             </div>
 
                             <div class="question__meta text-muted">
-                                Автор: {{ answer.id_u.nickname }} | {{ answer.created_at_answer|date:"d.m.Y H:i" }}
+                                Автор: {{ answer.user.nickname }} | {{ answer.created_at_answer|date:"d.m.Y H:i" }}
                             </div>
                         </div>
                     </div>

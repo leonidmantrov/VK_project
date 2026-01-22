@@ -1,105 +1,94 @@
 from django.db import models
-from django.utils import timezone
-from accounts.models import User
-
+from .manager import QuestionManager, AnswerManager
 
 class Tag(models.Model):
-    id_t = models.AutoField(primary_key=True, db_column='id_t')
-    tag = models.CharField(max_length=50, unique=True, db_column='tag')
+    tag_text = models.CharField(max_length=50, unique=True)
 
     objects = models.Manager()
     class Meta:
         db_table = 'Tags'
-        indexes = [
-            models.Index(fields=['tag'], name='idx_tags_tag'),
-        ]
+        indexes = [models.Index(fields=['tag_text'], name='idx_tags_tag')]
 
     def __str__(self):
-        return self.tag
+        return self.tag_text
 
 
 class Question(models.Model):
-    id_q = models.AutoField(primary_key=True, db_column='id_q')
-    id_u = models.ForeignKey(User,on_delete=models.CASCADE,db_column='id_u')
-    title_question = models.CharField(max_length=255, db_column='title_question')
-    question = models.TextField(db_column='question')
-    created_at_question = models.DateTimeField(default=timezone.now, db_column='created_at_question')
-    has_answers = models.BooleanField(default=False, db_column='has_answers')
-    correct_answer = models.ForeignKey('Answer', on_delete=models.SET_NULL, null=True, blank=True, db_column='correct_answer_id')
+    title_question = models.CharField(max_length=255)
+    question_text = models.TextField(max_length=1000)
+    created_at_question = models.DateTimeField(auto_now_add=True)
+    has_answers = models.BooleanField(default=False)
+    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='authored_questions')
+    correct_answer = models.ForeignKey('questions.Answer', on_delete=models.SET_NULL, related_name='marked_correct_in', null=True, blank=True)
 
-    tags = models.ManyToManyField(Tag, through='QuestionTag', related_name='questions')
+    rating = models.IntegerField(default=0)
+    total_votes = models.IntegerField(default=0)
+    answers_count = models.IntegerField(default=0)
 
-    objects = models.Manager()
+    tags = models.ManyToManyField('questions.Tag', through='QuestionTag', related_name='tagged_questions')
+
+    objects = QuestionManager()
+
     class Meta:
         db_table = 'Questions'
-        indexes = [models.Index(fields=['id_u'], name='idx_questions_user'),]
 
     def __str__(self):
         return self.title_question
 
 
 class QuestionTag(models.Model):
-    id_qt = models.AutoField(primary_key=True, db_column='id_qt')
-    id_q = models.ForeignKey( Question, on_delete=models.CASCADE, db_column='id_q')
-    id_t = models.ForeignKey(Tag, on_delete=models.RESTRICT, db_column='id_t')
+    question = models.ForeignKey('questions.Question', on_delete=models.CASCADE, related_name='tag_links')
+    tag = models.ForeignKey('questions.Tag', on_delete=models.RESTRICT, related_name='question_links')
 
     objects = models.Manager()
     class Meta:
         db_table = 'QuestionTags'
-        unique_together = [['id_q', 'id_t']]
-        indexes = [
-            models.Index(fields=['id_q'], name='idx_questiontags_question'),
-            models.Index(fields=['id_t'], name='idx_questiontags_tag'),
-        ]
+        unique_together = [['question', 'tag']]
 
     def __str__(self):
-        return f"Тег {self.id_t.tag} для вопроса {self.id_q.id_q}"
+        return f"Тег {self.tag.tag_text} для вопроса {self.question.id}"
 
 
 class Answer(models.Model):
-    id_an = models.AutoField(primary_key=True, db_column='id_an')
-    id_u = models.ForeignKey( User, on_delete=models.SET_NULL, null=True, db_column='id_u')
-    id_q = models.ForeignKey(Question, on_delete=models.CASCADE, db_column='id_q')
-    answers = models.TextField(db_column='answers')
-    created_at_answer = models.DateTimeField(default=timezone.now, db_column='created_at_answer')
+    answer_text = models.TextField(max_length=1000)
+    created_at_answer = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, related_name='authored_answers', null=True)
+    question = models.ForeignKey('questions.Question', on_delete=models.CASCADE, related_name='received_answers')
 
-    objects = models.Manager()
+    rating = models.IntegerField(default=0)
+    total_votes = models.IntegerField(default=0)
+
+    objects = AnswerManager()
     class Meta:
         db_table = 'Answers'
-        indexes = [
-            models.Index(fields=['id_q'], name='idx_answers_question'),
-            models.Index(fields=['id_u'], name='idx_answers_user'),
-        ]
 
     def __str__(self):
-        return f"Ответ на вопрос #{self.id_q.id_q}"
+        return f"Ответ на вопрос #{self.question.id}"
 
 
 class QuestionVote(models.Model):
-    id_vq = models.AutoField(primary_key=True, db_column='id_vq')
-    id_u = models.ForeignKey(User, on_delete=models.CASCADE, db_column='id_u')
-    id_q = models.ForeignKey(Question, on_delete=models.CASCADE, db_column='id_q')
-    vote_value = models.SmallIntegerField(db_column='vote_value')
+    vote_value = models.SmallIntegerField()
+    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='given_question_votes')
+    question = models.ForeignKey('questions.Question', on_delete=models.CASCADE, related_name='received_question_votes')
 
     objects = models.Manager()
     class Meta:
         db_table = 'QuestionVotes'
-        unique_together = [['id_u', 'id_q']]
+        unique_together = [['user', 'question']]
 
     def __str__(self):
-        return f"Голос {self.vote_value} за вопрос #{self.id_q.id_q}"
+        return f"Голос {self.vote_value} за вопрос #{self.question.id}"
 
 
 class Vote(models.Model):
-    id_v = models.AutoField(primary_key=True, db_column='id_v')
-    id_u = models.ForeignKey(User, on_delete=models.CASCADE, db_column='id_u')
-    id_an = models.ForeignKey(Answer, on_delete=models.CASCADE, db_column='id_an')
-    vote_value = models.SmallIntegerField(db_column='vote_value')
+    vote_value = models.SmallIntegerField()
+    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='given_answer_votes')
+    answer = models.ForeignKey('questions.Answer', on_delete=models.CASCADE, related_name='received_answer_votes')
 
     objects = models.Manager()
     class Meta:
         db_table = 'Votes'
-        unique_together = [['id_u', 'id_an']]
+        unique_together = [['user', 'answer']]
 
     def __str__(self):
-        return f"Голос {self.vote_value} за ответ #{self.id_an.id_an}"
+        return f"Голос {self.vote_value} за ответ #{self.answer.id}"

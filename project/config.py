@@ -22,6 +22,10 @@ def load_config():
                 'allowed_hosts': ['localhost', '127.0.0.1'],
                 "language_code": "en-us",
                 "time_zone": "UTC"
+            },
+            "paths": {
+                "media_root": "media",
+                "static_root": "staticfiles"
             }
         }
     with open(config_path, 'r', encoding='utf-8') as f:
