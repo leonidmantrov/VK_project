@@ -2,32 +2,32 @@
 
 <div class="vote-buttons text-center" style="width: 80px;">
     <button class="btn btn-sm {% if answer.user_vote == 1 %}btn-primary{% else %}btn-outline-primary{% endif %} answer-vote"
-            data-id="{{ answer.id_an }}"
+            data-id="{{ answer.id }}"
             data-value="1"
-            onclick="voteAnswer({{ answer.id_an }}, 1)"
+            onclick="voteAnswer({{ answer.id }}, 1)"
             title="Нравится"
-            {% if not user.is_authenticated %}disabled{% endif %}>
+            {% if not user.is_authenticated or answer.user.id == user.id %}disabled{% endif %}>
         👍
     </button>
 
     <div class="my-2">
-        <span id="answer-{{ answer.id_an }}-rating" class="fw-bold">
+        <span id="answer-{{ answer.id }}-rating" class="fw-bold">
             {{ answer.rating|default:0 }}
         </span>
     </div>
 
     <button class="btn btn-sm {% if answer.user_vote == -1 %}btn-primary{% else %}btn-outline-primary{% endif %} answer-vote"
-            data-id="{{ answer.id_an }}"
+            data-id="{{ answer.id }}"
             data-value="-1"
-            onclick="voteAnswer({{ answer.id_an }}, -1)"
+            onclick="voteAnswer({{ answer.id }}, -1)"
             title="Не нравится"
-            {% if not user.is_authenticated %}disabled{% endif %}>
+            {% if not user.is_authenticated or answer.user.id == user.id %}disabled{% endif %}>
         👎
     </button>
 
     {% if show_total %}
     <div class="small text-muted mt-1">
-        голосов: <span id="answer-{{ answer.id_an }}-total">{{ answer.total_votes|default:0 }}</span>
+        голосов: <span id="answer-{{ answer.id }}-total">{{ answer.total_votes|default:0 }}</span>
     </div>
     {% endif %}
 </div>

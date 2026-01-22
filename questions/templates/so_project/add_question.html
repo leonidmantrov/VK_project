@@ -14,19 +14,46 @@
         <form method="post" class="section__new__question" enctype="multipart/form-data">
             {% csrf_token %}
 
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %} {{ error }} {% endfor %}
+                </div>
+            {% endif %}
+
             <div class="question__field__name mb-3">
                 <label class="form-label field__name">Title</label>
-                <input type="text" class="form-control question__name" name="title" placeholder="Введите название вопроса" maxlength="255" required>
+                <textarea class="form-control question__name {% if form.title_question.errors %}is-invalid{% endif %}"
+                          name="title_question" placeholder="Введите название вопроса" maxlength="255" required>{{ form.title_question.value|default_if_none:'' }}</textarea>
+                {% if form.title_question.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.title_question.errors %} {{ error }} {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="form-text">Минимум 10 символов</div>
             </div>
 
             <div class="question__field__text mb-3">
                 <label class="form-label fiels__text">Text</label>
-                <textarea class="form-control question__text" name="text" placeholder="Опишите подробно вашу проблема" rows="8" required></textarea>
+                <textarea class="form-control question__text {% if form.question_text.errors %}is-invalid{% endif %}"
+                          name="question_text" placeholder="Опишите подробно вашу проблему" rows="8" required>{{ form.question_text.value|default_if_none:'' }}</textarea>
+                {% if form.question_text.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.question_text.errors %} {{ error }} {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="form-text">Минимум 20 символов</div>
             </div>
 
             <div class="question__field__tags mb-3">
                 <label class="form-label field__tags">Tags</label>
-                <textarea class="form-control question__tags" name="tags" placeholder="Введите слова-триггеры (python, django, mysql)" rows="2"></textarea>
+                <textarea class="form-control question__tags {% if form.tags_input.errors %}is-invalid{% endif %}"
+                       name="tags_input" placeholder="python, django, mysql">{{ form.tags_input.value|default_if_none:'' }}</textarea>
+                {% if form.tags_input.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.tags_input.errors %} {{ error }} {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="form-text">Введите теги через запятую (максимум 5)</div>
             </div>
 
             <div class="button__ASK__new__question">

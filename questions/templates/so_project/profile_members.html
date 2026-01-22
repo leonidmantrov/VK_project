@@ -9,11 +9,7 @@
 {% block main %}
     <main class="main container mt-4">
         <div class="profile__member">
-            {% if profile_user.avatar %}
-                <img src="/media/{{ profile_user.avatar }}" alt="profile" class="member__profile__image">
-            {% else %}
-                <img src="{% static 'so_project/img/profile.png' %}" alt="profile" class="member__profile__image">
-            {% endif %}
+            <img src="{{ profile_user.get_avatar_url }}" alt="profile" class="rounded-circle" style="width: 100px; height: 100px;">
             <div class="info__activity">
                 <h2>{{ profile_user.nickname }}</h2>
                 <p class="text-muted">@{{ profile_user.login }}</p>
@@ -25,16 +21,16 @@
             <div class="questions__member">
                 <h3>Questions</h3>
                 <div class="list-group" id="questionsList">
-                    {% for question in user_questions|slice:":5" %}
+                    {% for question_text in user_questions|slice:":5" %}
                         <div class="list-group-item card__activity d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
-                                <span class="badge bg-secondary me-2">{{ question.rating|default:0 }}</span>
-                                <a href="{% url 'questions:answers_page_for_question' question.id_q %}"
+                                <span class="badge bg-secondary me-2">{{ question_text.rating|default:0 }}</span>
+                                <a href="{% url 'questions:answers_page_for_question' question_text.id %}"
                                    class="text-decoration-none">
-                                    {{ question.title_question|truncatewords:10 }}
+                                    {{ question_text.title_question|truncatewords:10 }}
                                 </a>
                             </div>
-                            <small class="text-muted">{{ question.created_at_question|date:"d.m.Y" }}</small>
+                            <small class="text-muted">{{ question_text.created_at_question|date:"d.m.Y" }}</small>
                         </div>
                     {% empty %}
                         <div class="list-group-item">Вопросов пока нет</div>
@@ -42,16 +38,16 @@
 
                     {% if user_questions|length > 5 %}
                         <div id="moreQuestions" style="display: none;">
-                            {% for question in user_questions|slice:"5:" %}
+                            {% for question_text in user_questions|slice:"5:" %}
                                 <div class="list-group-item card__activity d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
-                                        <span class="badge bg-secondary me-2">{{ question.rating|default:0 }}</span>
-                                        <a href="{% url 'questions:answers_page_for_question' question.id_q %}"
+                                        <span class="badge bg-secondary me-2">{{ question_text.rating|default:0 }}</span>
+                                        <a href="{% url 'questions:answers_page_for_question' question_text.id %}"
                                            class="text-decoration-none">
-                                            {{ question.title_question|truncatewords:10 }}
+                                            {{ question_text.title_question|truncatewords:10 }}
                                         </a>
                                     </div>
-                                    <small class="text-muted">{{ question.created_at_question|date:"d.m.Y" }}</small>
+                                    <small class="text-muted">{{ question_text.created_at_question|date:"d.m.Y" }}</small>
                                 </div>
                             {% endfor %}
                         </div>
@@ -68,9 +64,9 @@
                         <div class="list-group-item card__activity d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
                                 <span class="badge bg-secondary me-2">{{ answer.rating|default:0 }}</span>
-                                <a href="{% url 'questions:answers_page_for_question' answer.id_q.id_q %}"
+                                <a href="{% url 'questions:answers_page_for_question' answer.question.id %}#answer-{{ answer.id }}"
                                    class="text-decoration-none">
-                                    {{ answer.answers|truncatewords:10 }}
+                                    {{ answer.answer_text|truncatewords:10 }}
                                 </a>
                             </div>
                             <small class="text-muted">{{ answer.created_at_answer|date:"d.m.Y" }}</small>
@@ -85,9 +81,9 @@
                                 <div class="list-group-item card__activity d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
                                         <span class="badge bg-secondary me-2">{{ answer.rating|default:0 }}</span>
-                                        <a href="{% url 'questions:answers_page_for_question' answer.id_q.id_q %}"
+                                        <a href="{% url 'questions:answers_page_for_question' answer.question.id %}#answer-{{ answer.id }}"
                                            class="text-decoration-none">
-                                            {{ answer.answers|truncatewords:10 }}
+                                            {{ answer.answer_text|truncatewords:10 }}
                                         </a>
                                     </div>
                                     <small class="text-muted">{{ answer.created_at_answer|date:"d.m.Y" }}</small>

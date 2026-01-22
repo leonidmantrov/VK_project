@@ -20,7 +20,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
     'questions',
     'accounts',
 ]
@@ -28,7 +27,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -70,7 +68,9 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = BASE_DIR / config['paths']['media_root']
+STATIC_ROOT = BASE_DIR / config['paths']['static_root']
+STATIC_URL = 'static/'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880
@@ -127,13 +127,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
 if DEBUG:
-    INTERNAL_IPS = [
-        "127.0.0.1",
-    ]
+    INSTALLED_APPS += ['debug_toolbar']
+    MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
+    INTERNAL_IPS = ["127.0.0.1"]

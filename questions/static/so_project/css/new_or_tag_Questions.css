@@ -9,6 +9,8 @@
     flex-direction: column;
     width: 80%;
     justify-content: space-between;
+    min-width: 0;
+    flex: 1 1 auto;
 }
 
 .question__description{
@@ -23,11 +25,7 @@
     display: flex;
     flex-direction: column;
     gap: 32px;
-    width: 10%;
-}
-
-.question__aside input[type="number"]{
-    width: 100%;
+    width: 80px;
 }
 
 .card__question {
@@ -35,13 +33,17 @@
     gap: 24px;
     padding: 16px;
     border: 2px solid darkgrey;
+    width: 100%;
+    min-width: 100%;
 }
 
 .question__footer{
-    display: flex;
-    gap: 32px;
+    display: flex !important;
+    gap: 32px !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
 }
-
 .question__tags{
     display: flex;
     gap: 8px;
@@ -56,10 +58,4 @@
 .questions__pagination__item {
     padding: 8px;
     background-color: lightgray;
-}
-
-.questions__image{
-    border-radius: 50%;
-    width: 100%;
-    height: fit-content;
 }

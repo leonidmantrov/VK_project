@@ -11,8 +11,17 @@
 {% block section %}
     <form method="post" enctype="multipart/form-data" class="mt-4">
         {% csrf_token %}
-        {% include "acc/context_blocks/login_block.html" with for_settings=False %}
-        {% include "acc/context_blocks/password_block.html" with for_settings=False %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% include "acc/context_blocks/login_block.html" with field=form.login for_settings=False %}
+        {% include "acc/context_blocks/password_block.html" with field=form.password for_settings=False %}
 
         <div class="row">
             <div class="col-sm-10 offset-sm-2">

@@ -3,11 +3,6 @@
     gap: 12px;
 }
 
-.member__profile__image{
-    width: 10%;
-    height: fit-content;
-}
-
 .info__activity{
     margin-top: auto;
 }

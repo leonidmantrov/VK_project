@@ -1,7 +1,7 @@
 QUESTIONS = [
     {
         "id": 1,
-        "question": "Tkinter does not display Frames correctly after grid_remove() under macOS",
+        "question_text": "Tkinter does not display Frames correctly after grid_remove() under macOS",
         "answer_count": 5,
         "avatar": 'img/avatarka.png',
         "description_question": """I  have the following problem. I created a desktop application to generate invoices for my dad's company.
@@ -13,7 +13,7 @@ QUESTIONS = [
     },
     {
         "id": 2,
-        "question": "Angular SSR doesn't serve HTML",
+        "question_text": "Angular SSR doesn't serve HTML",
         "answer_count": 4,
         "avatar": 'img/avatarka.png',
         "description_question": """I added the Angular SSR boilerplate code to my existing Angular 21 project by using
@@ -22,7 +22,7 @@ QUESTIONS = [
     },
     {
         "id": 3,
-        "question": "Undefined reference to string constructor with a particular compiler and flags",
+        "question_text": "Undefined reference to string constructor with a particular compiler and flags",
         "answer_count": 3,
         "avatar": 'img/avatarka.png',
         "description_question": """The linker error goes away when removing the sanitizer, switching to -O0 (but not -O1),
@@ -35,7 +35,7 @@ QUESTIONS = [
     },
     {
         "id": 4,
-        "question": "Snowflake undrop temporary table with DATA_RETENTION_TIME_IN_DAYS=0 successful",
+        "question_text": "Snowflake undrop temporary table with DATA_RETENTION_TIME_IN_DAYS=0 successful",
         "answer_count": 2,
         "avatar": 'img/avatarka.png',
         "description_question": """I am preparing for the Snowflake exam and tested setting DATA_RETENTION_TIME_IN_DAYS = 0.
@@ -44,7 +44,7 @@ QUESTIONS = [
     },
     {
         "id": 5,
-        "question": "SwiftData - limit to one of each matching query",
+        "question_text": "SwiftData - limit to one of each matching query",
         "answer_count": 1,
         "avatar": 'img/avatarka.png',
         "description_question": """This is, as you likely guessed, an activity log. There are many itemNames.
